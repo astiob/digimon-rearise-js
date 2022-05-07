@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang=en>
+<meta charset=utf-8>
+<meta name=flattr:id content=x7ng60>
+<style>
+strong a { border: 2px solid currentColor; padding: 1px }
+nav { border-bottom: 1px solid currentColor }
+</style>
+<title>Digimon ReArise Is Saved</title>
+<nav><a href=#ja>日本語↓</a></nav>
+<section>
+<h2>Play Digimon ReArise story after official server shutdown</h2>
+<p><strong>Get the Android app here: <a href=digimonreariseww-99-9-0.apk>global</a> or <a href=digimonrearise-99-9-0.apk>Japan</a>.</strong> Move this file to your phone (or download directly on the phone) and open the file to install.<!-- Then, launch the game and proceed to use a transfer password or create a new account.--></p>
+<p>All story is unlocked in DigiTown → Menu → Story Select. In a few days, other story-based cutscenes will be added and reorganized to make it possible to enjoy truly all of the game’s story.</p>
+<p>The app can be installed side-by-side with the official one. But the icons and names are the same, so be careful.</p>
+<!--h2>Save your Digimon, items etc.</h2>
+<p>Generate a <strong>transfer password</strong> in the official app: DigiTown → Menu → Account Transfer → Account Transfer through ID/Password → Issue Password.</p>
+<p>Install the custom Android app as described above. Use the transfer password to transfer your account over. (Transfer can be done immediately on the title screen.) If you want to <em>also</em> keep your account on the official server, then after loading your new DigiTown, follow the same steps to get a transfer password that works back in the official app.</p>
+<p><strong>You must do this before the official servers shut down.</strong></p-->
+<h2>What if I have iOS?</h2>
+<p>Install an Android emulator on a computer. Many free Android emulators are available (I hear BlueStacks works on Macs).<!-- Install the custom app in the emulator, and do your in-game account transfer as usual.--></p>
+<p>Alternatively, you can set up a proxy that will redirect the official app to the custom server: see the bottom of this page.</p>
+<!--h3>How do I avoid losing rubies if transferring from iOS?</h3>
+<p>Use the form below first. Then, put the same password or the new password into the new app.</p-->
+<h3>Will this app ever work on iOS?</h3>
+<p>I don’t think it is possible to install custom apps on iOS. But if you know how, do tell me. Unfortunately I also don’t have the official .ipa file, and I’m not sure whether it’s possible to obtain it any more.</p>
+<h2 id=import>Can I transfer my official account?</h2>
+<p><strong>Most likely not. But there’s a small chance if you still have the app installed and haven’t cleared cache.</strong></p>
+<p><strong>On Android,</strong> you need “root”, unfortunately. On many Android emulators, root is already enabled or you can enable it in the settings. On BlueStacks, try <a href=https://appuals.com/root-bluestacks/>one of these options</a>. On a real phone or tablet, find and follow a recent (!) guide to root your phone. This may officially void your warranty, and some apps may restrict their functionality until you disable/remove root again. While rooted, extract the file that is in this directory (to find it, you may need to enable Root Access in your File Manager as well):<ul>
+<li><code>/data/data/com.bandainamcoent.digimon_rearise/files/cache/X3UvZc5yBeuTYqpwOZ2CRNYVxyYb8Qag/</code> for Japan</li>
+<li><code>/data/data/com.bandainamcoent.digimon_rearise_ww/files/cache/X3UvZc5yBeuTYqpwOZ2CRNYVxyYb8Qag/</code> for global app</li>
+</ul><a href=#contact>Send me</a> this file. If the directory is empty and contains no files, your account data is unfortunately already gone.</p>
+<p><strong>On iOS,</strong> it seems this is impossible. But to make sure, follow <a href=https://imazing.com/guides/how-to-export-backup-and-transfer-ios-apps-data-and-settings>this guide to extract the app’s data</a> and <a href=#contact>send me</a> the resulting .imazingapp file.</p>
+<!--
+<h2>Can I save my account without the app?</h2>
+<form action=api/migrate method=post>
+<label><input required type=radio name=server value=ww>global</label>
+<label><input required type=radio name=server value=jp>Japan</label><br
+><label><input required type=radio name=platformType value=1>iOS</label>
+<label><input required type=radio name=platformType value=2>Android</label><br
+><label>Friend code: <input required type=text name=friendCode></label><br
+><label>Password: <input required type=password name=password></label><br
+><input type=submit value="Save account">
+</form>
+<p><strong>If you get error 1000007,</strong> your code or password is incorrect. Check and retype them.</p>
+<p>You will get a new transfer code in about three minutes. Use the old or new transfer code in the app later.</p>
+-->
+<h2>What can I do in-game?</h2>
+<ul>
+<li>Read/play through the story in DigiTown → Menu → Scene Select.</li>
+<li>Inspect all Digimon in DigiTown → Menu → Digidex.</li>
+<li>Look at your DigiTown and play with your Digimon.</li>
+<li>Change which Digimon you see in your DigiTown.</li>
+<li>Check your Digimon and item inventories.</li>
+</ul>
+<h3>Can I feed my Digimon or decorate my DigiTown?</h3>
+<p>Not yet.</p>
+<h3>Can I play battles?</h3>
+<p>No. If you try, you’ll get an error. There are no immediate plans to add this, but it is possible in the future.</p>
+<h3>I saved my account but my progress was lost!</h3>
+<p><strong>It is saved</strong> but hidden for now. This allows most sections to be locked. When they are implemented, your progress will reappear automatically.</p>
+<h3>Do you have the story of past events and clash battles?</h3>
+<p>Yes; all of it. The goal is to make it all available in-game.</p>
+<h2>Can I switch between Japanese and other languages?</h2>
+<p>Not yet, but this may be added in the future.</p>
+<h2>What has been changed in the app?</h2>
+<ul>
+<li>The server URL, to make the app go through the custom server (which is the entire point).</li>
+<li>The application ID, to distinguish it from the official app.</li>
+<li>The link to the official app’s Play Store page has been replaced by a link to this page.</li>
+<li>The Google Play billing permission has been removed, as there are no more in-app purchases.</li>
+<li>The app should now participate in Google’s Auto Backup, so if you have that enabled on your Google account, reinstalling the app should no longer lose your account ID. However, this has not been tested with this exact app, so if you try this, please keep a transfer password just to be safe and report back whether it worked.</li>
+<li>The app now allows sound recording on Android 10+.</li>
+<li>For advanced users, the app now allows backups, allows debugging, and trusts user-installed certificate authorities even on Android 7+.</li>
+</ul>
+<h3>Does the app still send any usage info to Bandai or other parties?</h3>
+<p>Yes; but I am not sure what it means and whether anyone is actually collecting it on the other end. Some of it seems to get rejected. If Bandai does collect this info, maybe they will see people are still interested in the game.</p>
+<h2 id=contact>Other questions or issues</h2>
+<p>Ping Chortos-2 on <a href=https://discord.gg/77s58bPSc9>Discord</a> or send a message on <a href=https://www.reddit.com/message/compose/?to=Chortos-2>Reddit</a> or <a href=https://chortos.selfip.net/~astiob/me#contact>elsewhere</a>.</p>
+<h2>I don’t want to play. Can I just have the game’s resources?</h2>
+<p>A compact (heh) archive of decrypted Unity asset bundles is <a href=https://mega.nz/folder/jZJyTTaD#SlQNBPp_5Z1KTyWIcHf3hA>on Mega</a>.</p>
+<p>If you need the files for all languages and for iOS, as well as the non-decrypted audio and video files, they are all <a href=https://chortos.selfip.net/~astiob/digimon-rearise-resources/>here</a> but without any bulk download option. If you need them in bulk, contact me and we’ll find a way.</p>
+<p>Decrypted audio, video, master configuration and decryption instructions will follow shortly.</p>
+<h2>I know how to operate proxies. Can I keep using only the official app?</h2>
+<p>Yes. Advanced users can set up a HTTPS middle-in-the-man proxy from api.digi-rise.com (for Japan) or digirige-os-api.channel.or.jp (global) to digi-rearise.is-saved.org for all official apps. However, note that you need to go through the same transfer process as everyone else to preserve your account data<!-- before the app makes first contact with the new server-->.<!-- You may be able to do the transfer in place.--></p>
+<h3>How <em>do</em> I operate a proxy like that?</h3>
+<p>The following should work for iOS and for Android 6 or below:</p>
+<ol>
+<li>Close Digimon ReArise from the phone’s task switcher if it is already running (or reboot the phone).</li>
+<li>On your computer, <a href=https://docs.mitmproxy.org/stable/overview-installation/>install mitmproxy</a>.</li>
+<!-- <li></li> -->
+<!-- <li>On your computer, open a terminal/command prompt. (On Windows, type <kbd>cmd</kbd> into Start Menu or Search to find Command Prompt.)<ul> -->
+<!-- <li>Now we will create a configuration file. On Windows, type:<blockquote><kbd><pre>mkdir .mitmproxy<br>cd .mitmproxy<br>notepad config.yaml</pre></kbd></blockquote>On macOS/Linux/BSD, type:<blockquote><kbd><pre> -->
+<li>Download <a href=mitmproxy/config.yaml>this <code>config.yaml</code> file</a> and find it in your Downloads folder. Keep the Downloads folder open.</li>
+<li>Move this file into a <kbd>.mitmproxy</kbd> folder inside your home directory. Here is how:<ul>
+<li>In a separate window, open your home directory. To do this on Windows, type <kbd>%userprofile%</kbd> into Start Menu, Search or an address bar, and press Enter.</li>
+<li>Within your home directory, create a folder named <kbd>.mitmproxy</kbd> (pay attention to the dot in front). Open it.</li>
+<li>Drag the <code>config.yaml</code> file you downloaded earlier into the <kbd>.mitmproxy</kbd> folder.</li>
+<li>You can now close both folders.</li>
+</ul></li>
+<!-- <li>Within the <kbd>.mitmproxy</kbd> folder, save a plain text file named <kbd>config.yaml</kbd> with the following contents:</li> -->
+<li>On your computer, open a terminal/command prompt.<ul>
+<li>On Windows, type <kbd>cmd</kbd> into Start Menu or Search to find Command Prompt.</li>
+<li>On other platforms, you probably have a “Terminal” application.</li>
+</ul></li>
+<li>In the terminal, type <kbd>mitmdump</kbd> and hit Enter.</li>
+<li>Find out your computer’s local IP address.<ul>
+<li><a href=https://www.groovypost.com/howto/microsoft/windows-7/find-your-local-ip-address-windows-7-cmd/>guide for Windows</a></li>
+<li><a href=http://osxdaily.com/2010/11/21/find-ip-address-mac/>guide for macOS</a></li>
+</ul></li>
+<li>Configure your phone/tablet to use the proxy.<ul>
+<li><a href=https://docs.telerik.com/fiddler/Configure-Fiddler/Tasks/ConfigureForiOS#set-the-ios-device-proxy>guide for iOS</a> (ignore mentions of Fiddler)</li>
+<li><a href=https://docs.telerik.com/fiddler/Configure-Fiddler/Tasks/ConfigureForAndroid#configure-nexus-device>guide for Android</a> (ignore mentions of Fiddler)</li>
+</ul></li>
+<li>Install the proxy’s certificate on the phone/tablet: open <kbd>mitm.it</kbd> in a browser on the phone/tablet and follow the instructions.<ul>
+<li><a href=https://docs.mitmproxy.org/stable/concepts-certificates/>more detailed guide</a></li>
+</ul></li>
+<li>You can now launch Digimon ReArise.</li>
+<li>When you’re done playing, turn off the proxy settings on your phone/tablet and shut down mitmproxy on the computer.</li>
+<li>When you want to restart playing, just reopen the terminal on the computer and type <kbd>mitmdump</kbd>, and re-enable the proxy on the phone/tablet.</li>
+</ol>
+</section>
+<section id=ja lang=ja>
+<h2>デジモンリアライズのストーリー、正式サービス終了後でも遊べる</h2>
+<!-- <p>わずか数時間しか残っていませんが、正式サーバからアカウント情報が引き継げます。遅くて申し訳ありません。</p> -->
+<p><strong>ダウンロードは<a href=digimonrearise-99-9-0.apk>こちら</a></strong></p>
+<!-- <p>インストールし、普通にID/バスワードを使ってそれだけです。もしくは新アカウントでもOK。</p> -->
+<p>新アプリはAndroidのみですが、エミュレータでもOK。iPhoneから引き継がれたアカウントも大丈夫です。</p>
+<p>今の所は「冒険の記録・図鑑・デジタウン・ウイジェット」しか機能が使えません。他は後で加えるつもりです。</p>
+<p>サービス終了前に「引き継ぎ」行われたアカウントの情報はできる限り全て引き継がれていますが、今使えない機能はまだ正しく反映していないことが多いです。</p>
+</section>

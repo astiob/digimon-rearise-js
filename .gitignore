@@ -1,0 +1,8 @@
+*~
+*.js
+config.json
+error.bin
+error.json
+node_modules
+tsconfig.tsbuildinfo
+digimon-rearise-server/public/*.apk

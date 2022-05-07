@@ -1,0 +1,14 @@
+{
+	"db": {
+		"user": "digimonrearise",
+		"password": "",
+		"database": "digimonrearise"
+	},
+	"encryptionKeyKey": "deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
+	"loginEncryptionKey": "KjS.$O,;+i_qVe|aTBrOd%N|u\\#dR!+9",
+	"masterEncryptionKey": "bn!Q4(z%3cuMqz)p|fNyWzg*zTmj9q+f",
+	"masterRepositoryPath": "../digimon-rearise-masters",
+	"resourceEncryptionKey": "fK%Bcy6EgzAQsR-a/LNDUt!cAZNG97a&",
+	"resourceRepositoryPath": "../digimon-rearise-resources/raw",
+	"sessionIdKey": "deadbeefdeadbeefdeadbeefdeadbeef"
+}

@@ -1,0 +1,5 @@
+allow_hosts:
+  - api.digi-rise.com
+  - digirige-os-api.channel.or.jp
+map_remote:
+  - /(api[.]digi-rise[.]com|digirige-os-api[.]channel[.]or[.]jp)/digi-rearise.is-saved.org

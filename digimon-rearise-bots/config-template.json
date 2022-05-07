@@ -1,0 +1,16 @@
+{
+	"caCertificatePath": "mitmproxy.pem",
+	"clientId": "",
+	"db": {
+		"user": "digimonrearise",
+		"password": "",
+		"database": "digimonrearise"
+	},
+	"guildIds": {
+		"/r/DigimonReArise": "433322998745792513"
+	},
+	"masterRepositoryPath": "../digimon-rearise-masters",
+	"mprId": 0,
+	"resourceDecodedPath": "../digimon-rearise-resources/decoded",
+	"token": ""
+}

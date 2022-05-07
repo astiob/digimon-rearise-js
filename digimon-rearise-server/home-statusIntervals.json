@@ -1,0 +1,33 @@
+{
+	"socialTopInfo": {
+		"highPriorityBoardContentInfo": {
+			"count": 0,
+			"isNew": false,
+			"updatedAt": "2000-01-01T00:00:00+09:00"
+		},
+		"lowPriorityBoardContentInfo": {
+			"count": 0,
+			"isNew": false,
+			"updatedAt": "2000-01-01T00:00:00+09:00"
+		},
+		"friendLogInfo": {
+			"count": 0,
+			"isNew": false,
+			"updatedAt": "2000-01-01T00:00:00+09:00"
+		},
+		"clanLogInfo": {
+			"count": 0,
+			"isNew": false,
+			"updatedAt": "2000-01-01T00:00:00+09:00"
+		}
+	},
+	"bannerIds": [],
+	"visitorList": [],
+	"reloadPrizeList": [],
+	"isDigirubySaleAvailable": false,
+	"gashaInfo": {
+		"gashaIds": [],
+		"isHighlight": false
+	},
+	"homeCircleAssetName": "home/circle_menu/home_circle_asset001"
+}
