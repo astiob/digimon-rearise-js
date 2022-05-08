@@ -231,7 +231,7 @@ const resourceDirectoryNames: { [lct in api.LanguageCodeType]: SimpleLanguageTag
 }
 async function resourceTree(): Promise<Tree> {
 	const repo = await resourceRepository
-	const commit = await repo.getBranchCommit('master')
+	const commit = await repo.getBranchCommit('main')
 	return commit.getTree()
 }
 async function resourceVersion(language: api.LanguageCodeType | SimpleLanguageTag, tree?: Tree): Promise<string> {
