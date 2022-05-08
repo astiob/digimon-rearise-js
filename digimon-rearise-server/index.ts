@@ -2200,36 +2200,31 @@ dt { padding-right: 1ex }
 			if (userId >= 0x02_00_00_00)
 				return {result: false}
 			else {
-				let inTransaction = false
-				const conn = await pool.getConnection()
-				try {
-					await conn.beginTransaction()
-					inTransaction = true
-					const [[row]] = await conn.execute<mysql.RowDataPacket[]>(
-						'select `partner_digimon_id`, `home_digimon_0`, `home_digimon_1`, `home_digimon_2`, `home_digimon_3`, `home_digimon_4`, `home_digimon_5`, `home_digimon_6` from `user` where `user_id` = ? for update',
-						[
-							userId,
-						],
-					)
-					if (!row)
-						throw digiriseError(api.ErrorNumber.UserNotExists)
-					const homeDigimonUpdates = [0,1,2,3,4,5,6].filter(i => row[`home_digimon_${i}`] === payload.userDigimonId).map(i => `, home_digimon_${i} = ${api.UserData.EmptyUserDigimonId}`).join('')
-					await conn.execute(
-						'update `user` set `partner_digimon_id` = ?' + homeDigimonUpdates + ' where `user_id` = ?',
-						[
-							payload.userDigimonId,
-							userId,
-						]
-					)
-					inTransaction = false
-					await conn.commit()
-				} catch (e) {
-					if (inTransaction)
-						await conn.rollback()
-					throw e
-				} finally {
-					conn.release()
-				}
+				await pool.execute(
+					`
+						update \`user\` set
+							\`partner_digimon_id\` = ?,
+							\`home_digimon_0\` = case \`home_digimon_0\` when ? then ${api.UserData.EmptyUserDigimonId} else \`home_digimon_0\` end,
+							\`home_digimon_1\` = case \`home_digimon_1\` when ? then ${api.UserData.EmptyUserDigimonId} else \`home_digimon_1\` end,
+							\`home_digimon_2\` = case \`home_digimon_2\` when ? then ${api.UserData.EmptyUserDigimonId} else \`home_digimon_2\` end,
+							\`home_digimon_3\` = case \`home_digimon_3\` when ? then ${api.UserData.EmptyUserDigimonId} else \`home_digimon_3\` end,
+							\`home_digimon_4\` = case \`home_digimon_4\` when ? then ${api.UserData.EmptyUserDigimonId} else \`home_digimon_4\` end,
+							\`home_digimon_5\` = case \`home_digimon_5\` when ? then ${api.UserData.EmptyUserDigimonId} else \`home_digimon_5\` end,
+							\`home_digimon_6\` = case \`home_digimon_6\` when ? then ${api.UserData.EmptyUserDigimonId} else \`home_digimon_6\` end
+						where \`user_id\` = ?
+					`,
+					[
+						payload.userDigimonId,
+						payload.userDigimonId,
+						payload.userDigimonId,
+						payload.userDigimonId,
+						payload.userDigimonId,
+						payload.userDigimonId,
+						payload.userDigimonId,
+						payload.userDigimonId,
+						userId,
+					]
+				)
 				return {
 					result: true,
 				}
