@@ -521,6 +521,8 @@ async function getUserData(pool: mysql.Pool, userId: number, language: api.Langu
 			nextUserQuest.playState = api.QuestPlayState.New
 			nextUserQuest.clearedEvaluationIdList = []
 		}
+		for (const userDigimon of savedUserData.userDigimonList)
+			userDigimon.isEcLocked = false
 		return {
 			...savedUserData,
 			userResumeQuest: [],
