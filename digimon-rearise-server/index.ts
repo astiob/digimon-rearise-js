@@ -1898,6 +1898,7 @@ dt { padding-right: 1ex }
 					homeDigimonList,
 				},
 			}
+			response.userData.personal.userId = userId
 			if (partnerDigimonId !== -1)
 				response.userData.personal.partnerDigimonId = partnerDigimonId
 			if (firstTutorialState === api.FirstTutorialState.End)
