@@ -76,12 +76,16 @@ You can find them <we haven't uploaded our changes yet since it's not really cen
    ```
 2. Design your new endpoint function in `/api`
    ```typescript
+   import { Request, ResponseToolkit } from '@hapi/hapi'
+   import * as api from '../../digimon-rearise-bots/apitypes'
+   
    export async function NewRequestHandler (req: Request, res: ResponseToolkit): Promise<T> {
        const commonRequest = await getValidCommonRequest(req, false)
        const payload: T = {}; // replace 'T' with the response datatype.
        return payload;
    }
    ```
+   Note: `getValidCommonRequest` is part of `common/digi_utils`.
 
 ## Notes
 
