@@ -10,7 +10,6 @@ import mysql from 'mysql2/promise'
 import stream from 'stream'
 
 import {db as dbConfig, encryptionKeyKey, loginEncryptionKey, masterEncryptionKey, masterRepositoryPath, resourceEncryptionKey, resourceRepositoryPath, sessionIdKey} from './config.json'
-import homeStatusIntervals from './home-statusIntervals.json'
 import {GetPurchaseHistoryHandler, GetShopHandler} from "./api/shop";
 import {EditUserProfileHandler, GetUserProfileTopHandler} from "./api/user_profile";
 import {GetGachaRateDetailHandler, GetGachaTopHandler} from "./api/gacha";
@@ -26,7 +25,7 @@ import {
 } from "./api/user";
 import {
 	ClaimDailyLoginBonusRequestHandler,
-	GetActivityBoardDataHandler,
+	GetActivityBoardDataHandler, GetHomeStatusHandler, GetHomeTimersHandler,
 	SetHomeTrainingDigimonHandler
 } from "./api/home";
 import {GetPresentsDataHandler} from "./api/presents";
@@ -50,6 +49,7 @@ import {
 	GetGlobalVersionAssetManifestHandler2
 } from "./api/assets";
 import {WidgetHandler} from "./api/widget";
+import {PrintAllDigimonsHandler} from "./api/digimon";
 
 declare module '@hapi/hapi' {
 	interface UserCredentials {
@@ -63,51 +63,6 @@ declare module '@hapi/hapi' {
 	interface RouteOptionsPayload {
 		protoAction?: 'error' | 'remove' | 'ignore'
 	}
-}
-
-const homeStatusEvery = {
-	"informationList": [],
-	"unreceivedPresentCount": 0,
-	"unreceivedMissionIds": [],
-	"userHatchingCapsuleList": [
-		{
-			"userHatchingCapsuleId": 1,
-			"userDigimonId": -1,
-			"itemId": -1,
-			"level": 0,
-			"requiredNextBit": 0,
-			"endCoolingDate": "2000-01-01T00:00:00+09:00"
-		},
-		{
-			"userHatchingCapsuleId": 2,
-			"userDigimonId": -1,
-			"itemId": -1,
-			"level": 0,
-			"requiredNextBit": 0,
-			"endCoolingDate": "2000-01-01T00:00:00+09:00",
-			// "trademarkId": 6
-		}
-	],
-	"questHistoryId": -1,
-	"adventureInfo": {
-		"isEncountRaid": false,
-		"isRescuedRaid": false,
-		"isOpenReview": false,
-		"isEndRaid": false,
-		"questLastPlayTime": "2000-01-01T00:00:00+09:00",
-		// "underworldLastPlayTime": "2000-01-01T00:00:00+09:00"
-	},
-	// "clanCapsuleChildDigimon": ??,  // maybe when visiting clan members?
-	"unreceivedChallengeIdList": [],
-	"newChallengeGroupIdList": [],
-	"isActiveChallenge": false,
-	"raidEventInSessionList": [],
-	"scenarioEventInSessionList": [],
-	"isEntryBP2": false,
-	"isOpeningXLB": false,
-	"bceInSessionList": [],
-	"resetTeamIdList": [],  // [ 8001, 8011, 8021, 6001 ]
-	"mprInSessionList": []
 }
 
 export const pool = mysql.createPool({
@@ -371,72 +326,14 @@ async function init() {
 	server.route({
 		method: 'POST',
 		path: '/api/home/statusEvery',
-		handler: async (request, h): Promise<api.HomeStatusEvery.Response> => {
-			const commonRequest = await getValidCommonRequest(request)
-			const userId = request.auth.credentials.user!.userId
-			let saved
-			if (userId < 0x02_00_00_00) {
-				const [serverName, serverUserId] =
-					!('languageCodeType' in commonRequest)
-						? [servers.jp.apiUrlBase.match(/\/\/([^/]+)\//)![1]!, userId]
-						: [servers.ww.apiUrlBase.match(/\/\/([^/]+)\//)![1]!, userId ^ 0x01_00_00_00]
-				;[[saved]] = await pool.execute<mysql.RowDataPacket[]>(
-					// 'select `home_statusEvery`, `new_password` from `legacy_accounts` where `server` = ? and `user_id` = ? and `consentFormItemData` is not null order by `last_attempt` desc limit 1',
-					'select `user_getAll`, `home_statusEvery` from `legacy_accounts` where `server` = ? and `user_id` = ? and `user_getAll` is not null order by `last_attempt` desc limit 1',
-					[
-						serverName,
-						serverUserId,
-					],
-				)
-			}
-			if (!saved)
-				return homeStatusEvery
-			let userHatchingCapsuleList: api.UserHatchingCapsule[]
-			const json: string | null = saved['home_statusEvery']
-			if (json != null) {
-				const savedHomeStatusEvery: api.HomeStatusEvery.Response = JSON.parse(json)
-				userHatchingCapsuleList = savedHomeStatusEvery.userHatchingCapsuleList
-			} else {
-				const savedUserGetAll: api.UserGetAll.Response = JSON.parse(saved['user_getAll'])
-				userHatchingCapsuleList = savedUserGetAll.userData.userHatchingCapsuleList
-			}
-			// const newPassword: string | null = saved['new_password']
-			// let informationList = []
-			// if (newPassword) {
-			// 	informationList.push({
-			// 		informationId: int
-			// 		category: InformationCategory
-			// 		thumbnail: string
-			// 		title: string
-			// 		dispOrder: int
-			// 		pickupOrder: int
-			// 		isPickup: boolean
-			// 		startDate: string
-			// 		endDate: string
-			// 		modifiedDate: string
-			// 	})
-			// }
-			// return {
-			// 	...savedHomeStatusEvery,
-			// 	informationList,
-			// 	unreceivedPresentCount: 0,
-			// 	unreceivedMissionIds: [],
-			// }
-			return {
-				...homeStatusEvery,
-				userHatchingCapsuleList: userHatchingCapsuleList,
-			}
-		}
+		handler: GetHomeStatusHandler
 	})
 
 	// todo: Figure out where this goes.
 	server.route({
 		method: 'POST',
 		path: '/api/home/statusIntervals',
-		handler: async (request, h): Promise<api.HomeStatusIntervals.Response> => {
-			const commonRequest = await getValidCommonRequest(request)
-			return homeStatusIntervals
-		}
+		handler: GetHomeTimersHandler
 	})
 
 	// todo: Figure out where this goes.
@@ -525,12 +422,7 @@ async function init() {
 	server.route({
 		method: 'POST',
 		path: '/api/digimon/scrounge',
-		handler: async (request, h): Promise<api.DigimonScrounge.Response> => {
-			const commonRequest = await getValidCommonRequest(request)
-			return {
-				digimonList: [],
-			}
-		}
+		handler: PrintAllDigimonsHandler
 	})
 
 	server.route({

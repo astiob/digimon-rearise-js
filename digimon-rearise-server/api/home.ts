@@ -3,6 +3,149 @@ import * as api from '../../digimon-rearise-bots/apitypes'
 import { getValidCommonRequest } from "../common/digi_utils";
 import { formatDate } from "../common/utils";
 import {pool} from "../index";
+import {servers} from "../../digimon-rearise-bots/server";
+import mysql from "mysql2/promise";
+
+const homeStatusEvery = {
+    "informationList": [],
+    "unreceivedPresentCount": 0,
+    "unreceivedMissionIds": [],
+    "userHatchingCapsuleList": [
+        {
+            "userHatchingCapsuleId": 1,
+            "userDigimonId": -1,
+            "itemId": -1,
+            "level": 0,
+            "requiredNextBit": 0,
+            "endCoolingDate": "2000-01-01T00:00:00+09:00"
+        },
+        {
+            "userHatchingCapsuleId": 2,
+            "userDigimonId": -1,
+            "itemId": -1,
+            "level": 0,
+            "requiredNextBit": 0,
+            "endCoolingDate": "2000-01-01T00:00:00+09:00",
+            // "trademarkId": 6
+        }
+    ],
+    "questHistoryId": -1,
+    "adventureInfo": {
+        "isEncountRaid": false,
+        "isRescuedRaid": false,
+        "isOpenReview": false,
+        "isEndRaid": false,
+        "questLastPlayTime": "2000-01-01T00:00:00+09:00",
+        // "underworldLastPlayTime": "2000-01-01T00:00:00+09:00"
+    },
+    // "clanCapsuleChildDigimon": ??,  // maybe when visiting clan members?
+    "unreceivedChallengeIdList": [],
+    "newChallengeGroupIdList": [],
+    "isActiveChallenge": false,
+    "raidEventInSessionList": [],
+    "scenarioEventInSessionList": [],
+    "isEntryBP2": false,
+    "isOpeningXLB": false,
+    "bceInSessionList": [],
+    "resetTeamIdList": [],  // [ 8001, 8011, 8021, 6001 ]
+    "mprInSessionList": []
+}
+
+export async function GetHomeStatusHandler (req: Request, res: ResponseToolkit): Promise<api.HomeStatusEvery.Response> {
+    const commonRequest = await getValidCommonRequest(req)
+    const userId = req.auth.credentials.user!.userId
+    let saved
+    if (userId < 0x02_00_00_00) {
+        const [serverName, serverUserId] =
+            !('languageCodeType' in commonRequest)
+                ? [servers.jp.apiUrlBase.match(/\/\/([^/]+)\//)![1]!, userId]
+                : [servers.ww.apiUrlBase.match(/\/\/([^/]+)\//)![1]!, userId ^ 0x01_00_00_00]
+        ;[[saved]] = await pool.execute<mysql.RowDataPacket[]>(
+            // 'select `home_statusEvery`, `new_password` from `legacy_accounts` where `server` = ? and `user_id` = ? and `consentFormItemData` is not null order by `last_attempt` desc limit 1',
+            'select `user_getAll`, `home_statusEvery` from `legacy_accounts` where `server` = ? and `user_id` = ? and `user_getAll` is not null order by `last_attempt` desc limit 1',
+            [
+                serverName,
+                serverUserId,
+            ],
+        )
+    }
+    if (!saved)
+        return homeStatusEvery
+    let userHatchingCapsuleList: api.UserHatchingCapsule[]
+    const json: string | null = saved['home_statusEvery']
+    if (json != null) {
+        const savedHomeStatusEvery: api.HomeStatusEvery.Response = JSON.parse(json)
+        userHatchingCapsuleList = savedHomeStatusEvery.userHatchingCapsuleList
+    } else {
+        const savedUserGetAll: api.UserGetAll.Response = JSON.parse(saved['user_getAll'])
+        userHatchingCapsuleList = savedUserGetAll.userData.userHatchingCapsuleList
+    }
+    // const newPassword: string | null = saved['new_password']
+    // let informationList = []
+    // if (newPassword) {
+    // 	informationList.push({
+    // 		informationId: int
+    // 		category: InformationCategory
+    // 		thumbnail: string
+    // 		title: string
+    // 		dispOrder: int
+    // 		pickupOrder: int
+    // 		isPickup: boolean
+    // 		startDate: string
+    // 		endDate: string
+    // 		modifiedDate: string
+    // 	})
+    // }
+    // return {
+    // 	...savedHomeStatusEvery,
+    // 	informationList,
+    // 	unreceivedPresentCount: 0,
+    // 	unreceivedMissionIds: [],
+    // }
+    return {
+        ...homeStatusEvery,
+        userHatchingCapsuleList: userHatchingCapsuleList,
+    }
+}
+
+const homeStatusIntervals = {
+    "socialTopInfo": {
+        "highPriorityBoardContentInfo": {
+            "count": 0,
+            "isNew": false,
+            "updatedAt": "2000-01-01T00:00:00+09:00"
+        },
+        "lowPriorityBoardContentInfo": {
+            "count": 0,
+            "isNew": false,
+            "updatedAt": "2000-01-01T00:00:00+09:00"
+        },
+        "friendLogInfo": {
+            "count": 0,
+            "isNew": false,
+            "updatedAt": "2000-01-01T00:00:00+09:00"
+        },
+        "clanLogInfo": {
+            "count": 0,
+            "isNew": false,
+            "updatedAt": "2000-01-01T00:00:00+09:00"
+        }
+    },
+    "bannerIds": [],
+    "visitorList": [],
+    "reloadPrizeList": [],
+    "isDigirubySaleAvailable": false,
+    "gashaInfo": {
+        "gashaIds": [],
+        "isHighlight": false
+    },
+    "homeCircleAssetName": "home/circle_menu/home_circle_asset001"
+}
+
+export async function GetHomeTimersHandler (req: Request, res: ResponseToolkit): Promise<api.HomeStatusIntervals.Response> {
+    const commonRequest = await getValidCommonRequest(req)
+    return homeStatusIntervals
+}
 
 export async function ClaimDailyLoginBonusRequestHandler (req: Request, res: ResponseToolkit): Promise<api.HomeLogin.Response> {
     const commonRequest = await getValidCommonRequest(req)
