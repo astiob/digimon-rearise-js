@@ -11,3 +11,16 @@ export async function GetSideMenuEventListHandler (req: Request, res: ResponseTo
         mprInSessionList: [],
     }
 }
+
+export async function GetAllNewsHandler (req: Request, res: ResponseToolkit): Promise<api.InformationGetList.Response> {
+    const commonRequest = await getValidCommonRequest(req)
+    return {
+        informationList: [],
+        bannerIdList: [],
+    }
+}
+
+export async function GetNewsDetailHandler (req: Request, res: ResponseToolkit): Promise<api.InformationGetDetail.Response> {
+    const commonRequest = await getValidCommonRequest(req)
+    return {description: ''}
+}

@@ -29,7 +29,7 @@ import {
 	SetHomeTrainingDigimonHandler
 } from "./api/home";
 import {GetPresentsDataHandler} from "./api/presents";
-import {GetSideMenuEventListHandler} from "./api/news";
+import {GetAllNewsHandler, GetNewsDetailHandler, GetSideMenuEventListHandler} from "./api/news";
 import {UpdateTutorialProgressHandler} from "./api/tutorial";
 import {
 	GetBackupPasswordHandler,
@@ -50,6 +50,8 @@ import {
 } from "./api/assets";
 import {WidgetHandler} from "./api/widget";
 import {PrintAllDigimonsHandler} from "./api/digimon";
+import {GetChallengeStatusHandler} from "./api/quests";
+import {GetAllCutsceneListHandler} from "./api/story";
 
 declare module '@hapi/hapi' {
 	interface UserCredentials {
@@ -140,28 +142,28 @@ async function init() {
 	server.auth.strategy('resource', 'digirise', {encryptionKey: Buffer.from(resourceEncryptionKey), allowSession: false, base64: true})
 	server.auth.default('session')
 
-	server.ext('onPreResponse', (request, h) => {
-		const response = request.response
+	server.ext('onPreResponse', (req, res) => {
+		const response = req.response
 		if (Boom.isBoom(response)) {
-			// console.error(request, response)
-			if (request.path.match(/^\/api\//) && response.output.statusCode === 500) {
+			// console.error(req, response)
+			if (req.path.match(/^\/api\//) && response.output.statusCode === 500) {
 				response.output.statusCode = 200
 				if (!('errorNumber' in response.output.payload)) {
 					const error: api.Error = {errorNumber: api.ErrorNumber.ServerError}
 					response.output.payload = error as unknown as Boom.Payload
 				}
 			}
-			return h.continue
-		} else if (response.variety === 'stream' || !request.auth?.artifacts?.encryptionKey || response.source === null) {
+			return res.continue
+		} else if (response.variety === 'stream' || !req.auth?.artifacts?.encryptionKey || response.source === null) {
 			// console.log(response.source)
-			return h.continue
+			return res.continue
 		} else {
 			// console.log(response.source)
 			const bytes = response.variety === 'buffer' ? response.source as Buffer : typeof response.source === 'object' ? Buffer.from(JSON.stringify(response.source)) : Buffer.from(String(response.source))
 			const paddedCipherIv = crypto.randomBytes(20)
-			const cipher = crypto.createCipheriv('aes-256-cbc', request.auth.artifacts.encryptionKey, paddedCipherIv.slice(2, 18))
+			const cipher = crypto.createCipheriv('aes-256-cbc', req.auth.artifacts.encryptionKey, paddedCipherIv.slice(2, 18))
 			const encrypted = Buffer.concat([paddedCipherIv, cipher.update(bytes), cipher.final()])
-			if (request.auth.artifacts.base64)
+			if (req.auth.artifacts.base64)
 				// Return as a string to let Hapi apply gzip compression to counteract the Base64 expansion.
 				// It will set the MIME type to text/html, but that's not a problem.
 				// The official server doesn't use compression here, but again that's not a problem.
@@ -322,14 +324,12 @@ async function init() {
 		handler: ClaimDailyLoginBonusRequestHandler
 	})
 
-	// todo: Figure out where this goes.
 	server.route({
 		method: 'POST',
 		path: '/api/home/statusEvery',
 		handler: GetHomeStatusHandler
 	})
 
-	// todo: Figure out where this goes.
 	server.route({
 		method: 'POST',
 		path: '/api/home/statusIntervals',
@@ -340,35 +340,19 @@ async function init() {
 	server.route({
 		method: 'POST',
 		path: '/api/information/getList',
-		handler: async (request, h): Promise<api.InformationGetList.Response> => {
-			const commonRequest = await getValidCommonRequest(request)
-			return {
-				informationList: [],
-				bannerIdList: [],
-			}
-		}
+		handler: GetAllNewsHandler
 	})
 
-	// server.route({
-	// 	method: 'POST',
-	// 	path: '/api/information/getDetail',
-	// 	handler: async (request, h): Promise<api.InformationGetDetail.Response> => {
-	// 		const commonRequest = await getValidCommonRequest(request)
-	// 		return {description: ''}
-	// 	}
-	// })
+	server.route({
+		method: 'POST',
+	 	path: '/api/information/getDetail',
+	 	handler: GetNewsDetailHandler
+	})
 
-	// todo: Figure out where this goes.
 	server.route({
 		method: 'POST',
 		path: '/api/challenge/top',
-		handler: async (request, h): Promise<api.ChallengeTop.Response> => {
-			const commonRequest = await getValidCommonRequest(request)
-			return {
-				challengeGroupList: [],
-				endChallengeGroupIdList: [],
-			}
-		}
+		handler: GetChallengeStatusHandler
 	})
 
 	server.route({
@@ -428,12 +412,7 @@ async function init() {
 	server.route({
 		method: 'POST',
 		path: '/api/raidRanking/scenarioDictionary',
-		handler: async (request, h): Promise<api.RaidRankingScenarioDictionary.Response> => {
-			const commonRequest = await getValidCommonRequest(request)
-			return {
-				dictionaryList: [],
-			}
-		}
+		handler: GetAllCutsceneListHandler
 	})
 
 	server.route({

@@ -70,7 +70,6 @@ You can find them <we haven't uploaded our changes yet since it's not really cen
    server.route({
        method: 'POST',
        path: '/path/to/endpoint',
-       options: {auth: 'master', cache: false},
        handler: NewRequestHandler
    })
    ```
