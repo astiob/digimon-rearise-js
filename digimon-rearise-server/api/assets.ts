@@ -10,10 +10,12 @@ import {promisify} from "util";
 import zlib from 'zlib'
 import {promises as fs} from "fs";
 import {XorStream} from "../common/utils";
+import * as path from "path";
 
 export type SimpleLanguageTag = 'ja' | 'en' | 'ko' | 'zh'
 
-const resourceRepository = NodeGit.Repository.open(resourceRepositoryPath)
+const resourcePath = path.join(__dirname, resourceRepositoryPath)
+const resourceRepository = NodeGit.Repository.open(resourcePath)
 const resourceDirectoryNames: { [lct in api.LanguageCodeType]: SimpleLanguageTag } = {
     [api.LanguageCodeType.Ja]: 'ja',
     [api.LanguageCodeType.En]: 'en',
@@ -241,7 +243,8 @@ interface Masters {
     tree: Tree
     manifest: MasterManifest
 }
-export const masterRepository = NodeGit.Repository.open(masterRepositoryPath)
+const masterPath = path.join(__dirname, masterRepositoryPath)
+export const masterRepository = NodeGit.Repository.open(masterPath)
 export const masterBranchNamesByCodeType = {
     [api.LanguageCodeType.Ja]: 'master',
     [api.LanguageCodeType.En]: 'en',

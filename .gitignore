@@ -34,3 +34,4 @@ digimon-rearise-server/public/*.apk
 .idea/**/dbnavigator.xml
 .idea_modules/
 .idea/httpRequests
+*.map
