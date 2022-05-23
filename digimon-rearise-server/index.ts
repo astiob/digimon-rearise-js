@@ -52,6 +52,7 @@ import {WidgetHandler} from "./api/widget";
 import {PrintAllDigimonsHandler} from "./api/digimon";
 import {GetChallengeStatusHandler} from "./api/quests";
 import {GetAllCutsceneListHandler} from "./api/story";
+import {PublicPageServerHandler} from "./api/http";
 
 declare module '@hapi/hapi' {
 	interface UserCredentials {
@@ -479,6 +480,13 @@ async function init() {
 		method: 'POST',
 		path: '/api/dpoint/getPurchaseHistory',
 		handler: GetPurchaseHistoryHandler
+	})
+
+	server.route({
+		method: ['GET', 'POST'],
+		path: '/{any*}',
+		options: {auth: false},
+		handler: PublicPageServerHandler
 	})
 
 	await server.start()
