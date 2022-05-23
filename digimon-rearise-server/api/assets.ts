@@ -14,8 +14,7 @@ import * as path from "path";
 
 export type SimpleLanguageTag = 'ja' | 'en' | 'ko' | 'zh'
 
-const resourcePath = path.join(__dirname, resourceRepositoryPath)
-const resourceRepository = NodeGit.Repository.open(resourcePath)
+const resourceRepository = NodeGit.Repository.open(resourceRepositoryPath)
 const resourceDirectoryNames: { [lct in api.LanguageCodeType]: SimpleLanguageTag } = {
     [api.LanguageCodeType.Ja]: 'ja',
     [api.LanguageCodeType.En]: 'en',
@@ -243,8 +242,8 @@ interface Masters {
     tree: Tree
     manifest: MasterManifest
 }
-const masterPath = path.join(__dirname, masterRepositoryPath)
-export const masterRepository = NodeGit.Repository.open(masterPath)
+const masterPath = path.resolve(__dirname, masterRepositoryPath)
+export const masterRepository = NodeGit.Repository.open(masterRepositoryPath)
 export const masterBranchNamesByCodeType = {
     [api.LanguageCodeType.Ja]: 'master',
     [api.LanguageCodeType.En]: 'en',
