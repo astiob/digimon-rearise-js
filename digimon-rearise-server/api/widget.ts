@@ -7,8 +7,8 @@ const globalWidgetInformation = {
     [api.LanguageCodeType.Ko]: '지금, 당신의 모험이 현실이 된다!\n',
     [api.LanguageCodeType.Zh]: '你的冒險，即將化為現實！\n',
 }
-export async function WidgetHandler (req: Request, res: ResponseToolkit) {
-    const payload: any = req.payload
+export async function WidgetHandler (request: Request, responseHelper: ResponseToolkit) {
+    const payload: any = request.payload
     if (!payload)
         return '今、キミの冒険が現実となる！\n'
     const languageCodeType = payload.commonRequest?.languageCodeType

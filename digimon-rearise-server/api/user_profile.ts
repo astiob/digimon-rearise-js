@@ -5,9 +5,9 @@ import mysql from "mysql2/promise";
 import {servers} from "../../digimon-rearise-bots/server";
 import {pool} from "../index";
 
-export async function GetUserProfileTopHandler (req: Request, res: ResponseToolkit): Promise<api.ProfileTop.Response> {
-    const commonRequest = await getValidCommonRequest(req)
-    const userId = req.auth.credentials.user!.userId
+export async function GetUserProfileTopHandler (request: Request, responseHelper: ResponseToolkit): Promise<api.ProfileTop.Response> {
+    const commonRequest = await getValidCommonRequest(request)
+    const userId = request.auth.credentials.user!.userId
     const response = {
         greetings: '',
         battleParkRankId: api.UserData.DefaultBattleParkRank,
@@ -51,10 +51,10 @@ export async function GetUserProfileTopHandler (req: Request, res: ResponseToolk
     return response
 }
 
-export async function EditUserProfileHandler (req: Request, res: ResponseToolkit): Promise<api.ProfileEdit.Response> {
-    const commonRequest = await getValidCommonRequest(req)
+export async function EditUserProfileHandler (request: Request, responseHelper: ResponseToolkit): Promise<api.ProfileEdit.Response> {
+    const commonRequest = await getValidCommonRequest(request)
 
-    const payload = req.payload as api.ProfileEdit.Request
+    const payload = request.payload as api.ProfileEdit.Request
     if (typeof payload.name !== 'string')
         throw new Error('invalid `name`')
     if (typeof payload.greetings !== 'string')
@@ -70,7 +70,7 @@ export async function EditUserProfileHandler (req: Request, res: ResponseToolkit
     if (payload.greetings.match(/^\s+$/))
         throw digiriseError(api.ErrorNumber.NGWordInUserProfile)
 
-    const userId = req.auth.credentials.user!.userId
+    const userId = request.auth.credentials.user!.userId
     // if (userId >= 0x02_00_00_00) {
     await pool.execute(
         'update `user` set `tamer_name` = ?, `greetings` = ? where `user_id` = ?',

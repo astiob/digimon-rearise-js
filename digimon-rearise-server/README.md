@@ -78,8 +78,8 @@ You can find them <we haven't uploaded our changes yet since it's not really cen
    import { Request, ResponseToolkit } from '@hapi/hapi'
    import * as api from '../../digimon-rearise-bots/apitypes'
    
-   export async function NewRequestHandler (req: Request, res: ResponseToolkit): Promise<T> {
-       const commonRequest = await getValidCommonRequest(req, false)
+   export async function NewRequestHandler (request: Request, responseHelper: ResponseToolkit): Promise<T> {
+       const commonRequest = await getValidCommonRequest(request, false)
        const payload: T = {}; // replace 'T' with the response datatype.
        return payload;
    }

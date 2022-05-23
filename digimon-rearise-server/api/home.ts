@@ -51,9 +51,9 @@ const homeStatusEvery = {
     "mprInSessionList": []
 }
 
-export async function GetHomeStatusHandler (req: Request, res: ResponseToolkit): Promise<api.HomeStatusEvery.Response> {
-    const commonRequest = await getValidCommonRequest(req)
-    const userId = req.auth.credentials.user!.userId
+export async function GetHomeStatusHandler (request: Request, responseHelper: ResponseToolkit): Promise<api.HomeStatusEvery.Response> {
+    const commonRequest = await getValidCommonRequest(request)
+    const userId = request.auth.credentials.user!.userId
     let saved
     if (userId < 0x02_00_00_00) {
         const [serverName, serverUserId] =
@@ -142,20 +142,20 @@ const homeStatusIntervals = {
     "homeCircleAssetName": "home/circle_menu/home_circle_asset001"
 }
 
-export async function GetHomeTimersHandler (req: Request, res: ResponseToolkit): Promise<api.HomeStatusIntervals.Response> {
-    const commonRequest = await getValidCommonRequest(req)
+export async function GetHomeTimersHandler (request: Request, responseHelper: ResponseToolkit): Promise<api.HomeStatusIntervals.Response> {
+    const commonRequest = await getValidCommonRequest(request)
     return homeStatusIntervals
 }
 
-export async function ClaimDailyLoginBonusRequestHandler (req: Request, res: ResponseToolkit): Promise<api.HomeLogin.Response> {
-    const commonRequest = await getValidCommonRequest(req)
+export async function ClaimDailyLoginBonusRequestHandler (request: Request, responseHelper: ResponseToolkit): Promise<api.HomeLogin.Response> {
+    const commonRequest = await getValidCommonRequest(request)
     return {
         receivedLoginBonusList: []
     }
 }
 
-export async function GetActivityBoardDataHandler (req: Request, res: ResponseToolkit): Promise<api.HomeBoard.Response> {
-    const commonRequest = await getValidCommonRequest(req)
+export async function GetActivityBoardDataHandler (request: Request, responseHelper: ResponseToolkit): Promise<api.HomeBoard.Response> {
+    const commonRequest = await getValidCommonRequest(request)
     const zeroLogObject = {
         count: 0,
         isNew: false,
@@ -171,16 +171,16 @@ export async function GetActivityBoardDataHandler (req: Request, res: ResponseTo
     }
 }
 
-export async function SetHomeTrainingDigimonHandler (req: Request, res: ResponseToolkit): Promise<api.HomeDigimonEdit.Response> {
-    const commonRequest = await getValidCommonRequest(req)
+export async function SetHomeTrainingDigimonHandler (request: Request, responseHelper: ResponseToolkit): Promise<api.HomeDigimonEdit.Response> {
+    const commonRequest = await getValidCommonRequest(request)
 
-    const payload = req.payload as api.HomeDigimonEdit.Request
+    const payload = request.payload as api.HomeDigimonEdit.Request
     if (typeof payload.homeDigimonList !== 'object' || !(payload.homeDigimonList instanceof Array))
         throw new Error('invalid `homeDigimonList`')
     if (payload.homeDigimonList.length !== 7 || !payload.homeDigimonList.every(x => typeof x === 'number' && (x | 0) === x))
         throw new Error('invalid `homeDigimonList`')
 
-    const userId = req.auth.credentials.user!.userId
+    const userId = request.auth.credentials.user!.userId
     await pool.execute(
         'update `user` set `home_digimon_0` = ?, `home_digimon_1` = ?, `home_digimon_2` = ?, `home_digimon_3` = ?, `home_digimon_4` = ?, `home_digimon_5` = ?, `home_digimon_6` = ? where `user_id` = ?',
         [

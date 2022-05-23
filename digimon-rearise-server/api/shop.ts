@@ -2,8 +2,8 @@ import { Request, ResponseToolkit } from '@hapi/hapi'
 import * as api from '../../digimon-rearise-bots/apitypes'
 import { getValidCommonRequest } from "../common/digi_utils";
 
-export async function GetShopHandler (req: Request, res: ResponseToolkit): Promise<api.ShopTop.Response> {
-    const commonRequest = await getValidCommonRequest(req)
+export async function GetShopHandler (request: Request, responseHelper: ResponseToolkit): Promise<api.ShopTop.Response> {
+    const commonRequest = await getValidCommonRequest(request)
     return {
         shopList: [],
         reloadPrizeList: [],
@@ -13,8 +13,8 @@ export async function GetShopHandler (req: Request, res: ResponseToolkit): Promi
     }
 }
 
-export async function GetPurchaseHistoryHandler (req: Request, res: ResponseToolkit): Promise<api.DpointGetPurchaseHistory.Response> {
-    const commonRequest = await getValidCommonRequest(req)
+export async function GetPurchaseHistoryHandler (request: Request, responseHelper: ResponseToolkit): Promise<api.DpointGetPurchaseHistory.Response> {
+    const commonRequest = await getValidCommonRequest(request)
     return {
         freeDigiruby: 0,
         purchaseDigiruby: 0,

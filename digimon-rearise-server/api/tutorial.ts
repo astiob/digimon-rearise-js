@@ -4,9 +4,9 @@ import mysql from "mysql2/promise";
 import {getValidCommonRequest} from "../common/digi_utils";
 import {pool} from "../index";
 
-export async function UpdateTutorialProgressHandler (req: Request, res: ResponseToolkit): Promise<api.WithCommonResponse<object>> {
-    const commonRequest = await getValidCommonRequest(req, false)
-    const payload = req.payload as { tutorialInfo: api.TutorialInfo }
+export async function UpdateTutorialProgressHandler (request: Request, responseHelper: ResponseToolkit): Promise<api.WithCommonResponse<object>> {
+    const commonRequest = await getValidCommonRequest(request, false)
+    const payload = request.payload as { tutorialInfo: api.TutorialInfo }
     // console.dir(payload, {depth: null})
 
     if (typeof payload.tutorialInfo !== 'object' || payload.tutorialInfo === null)
@@ -28,7 +28,7 @@ export async function UpdateTutorialProgressHandler (req: Request, res: Response
             throw new Error
     }
 
-    const userId = req.auth.credentials.user!.userId
+    const userId = request.auth.credentials.user!.userId
     if (userId >= 0x02_00_00_00) {
         const [result] = await pool.execute<mysql.OkPacket | mysql.ResultSetHeader>(
             'update `user` set `first_tutorial_state` = ? where `user_id` = ? and `first_tutorial_state` in (?, ?)',

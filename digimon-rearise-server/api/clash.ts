@@ -2,8 +2,8 @@ import { Request, ResponseToolkit } from '@hapi/hapi'
 import * as api from '../../digimon-rearise-bots/apitypes'
 import {getValidCommonRequest} from "../common/digi_utils";
 
-export async function GetAvailableClashBattlesHandler (req: Request, res: ResponseToolkit): Promise<api.RaidTop.Response> {
-    const commonRequest = await getValidCommonRequest(req)
+export async function GetAvailableClashBattlesHandler (request: Request, responseHelper: ResponseToolkit): Promise<api.RaidTop.Response> {
+    const commonRequest = await getValidCommonRequest(request)
     return {
         notJoinList: [],
         joinList: [],
@@ -13,8 +13,8 @@ export async function GetAvailableClashBattlesHandler (req: Request, res: Respon
     }
 }
 
-export async function GetAvailableSpawnableClashBattlesHandler (req: Request, res: ResponseToolkit): Promise<api.RaidCatalogTop.Response> {
-    const commonRequest = await getValidCommonRequest(req)
+export async function GetAvailableSpawnableClashBattlesHandler (request: Request, responseHelper: ResponseToolkit): Promise<api.RaidCatalogTop.Response> {
+    const commonRequest = await getValidCommonRequest(request)
     return {
         raidCatalogList: [],
     }

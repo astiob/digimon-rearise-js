@@ -66,59 +66,59 @@ function cacheKey(manifest: {version: string}): string {
     return versionToCacheKey(manifest.version)
 }
 
-export async function GetGlobalVersionAssetManifestHandler (req: Request, res: ResponseToolkit) {
-    const osType = req.params['osType']
+export async function GetGlobalVersionAssetManifestHandler (request: Request, responseHelper: ResponseToolkit) {
+    const osType = request.params['osType']
     if (osType !== 'ios' && osType !== 'android')
-        return res.response().code(404)
+        return responseHelper.response().code(404)
 
-    const language = req.params['language']
+    const language = request.params['language']
     const resources = await getResources(language)
     if (!resources)
-        return res.response().code(404)
+        return responseHelper.response().code(404)
 
     const manifestEntry = await resources.tree.getEntry(`${language}/asset/${osType}/manifest`)
     const manifestBlob = await manifestEntry.getBlob()
     const manifest: ResourceManifest = JSON.parse(manifestBlob.toString())
-    if (req.params['cacheKey'] !== cacheKey(manifest))
-        return res.response().code(404)
+    if (request.params['cacheKey'] !== cacheKey(manifest))
+        return responseHelper.response().code(404)
 
     return manifest
 }
 
-export async function GetJapanVersionAssetManifestHandler (req: Request, res: ResponseToolkit) {
-    let resourceKind = req.params['resourceKind']
+export async function GetJapanVersionAssetManifestHandler (request: Request, responseHelper: ResponseToolkit) {
+    let resourceKind = request.params['resourceKind']
     if (resourceKind !== 'movie' && resourceKind !== 'sound')
-        return res.response().code(404)
+        return responseHelper.response().code(404)
 
     const language = 'ja'
     const resources = (await getResources(language))!
-    if (req.params['cacheKey'] !== await resourceCacheKey(language, resources.tree))
-        return res.response().code(404)
+    if (request.params['cacheKey'] !== await resourceCacheKey(language, resources.tree))
+        return responseHelper.response().code(404)
 
     const manifestEntry = await resources.tree.getEntry(`${language}/${resourceKind}/manifest`)
     const manifestBlob = await manifestEntry.getBlob()
     return JSON.parse(manifestBlob.toString())
 }
 
-export async function GetGlobalVersionResourceFileHandler (req: Request, res: ResponseToolkit) {
-    const path = req.params['path']
+export async function GetGlobalVersionResourceFileHandler (request: Request, responseHelper: ResponseToolkit) {
+    const path = request.params['path']
     if (path.indexOf('.') >= 0/* || path.substring(0, 1) === '/'*/)
-        return res.response().code(404)
+        return responseHelper.response().code(404)
 
-    const osType = req.params['osType']
+    const osType = request.params['osType']
     if (osType !== 'ios' && osType !== 'android')
-        return res.response().code(404)
+        return responseHelper.response().code(404)
 
-    const language = req.params['language']
+    const language = request.params['language']
     const resources = await getResources(language)
     if (!resources)
-        return res.response().code(404)
+        return responseHelper.response().code(404)
 
     const manifestEntry = await resources.tree.getEntry(`${language}/asset/${osType}/manifest`)
     const manifestBlob = await manifestEntry.getBlob()
     const manifest: ResourceManifest = JSON.parse(manifestBlob.toString())
-    if (req.params['cacheKey'] !== cacheKey(manifest))
-        return res.response().code(404)
+    if (request.params['cacheKey'] !== cacheKey(manifest))
+        return responseHelper.response().code(404)
 
     for (const resource of manifest.resources) {
         if (path === resource.name.replace(/[^/]*$/, resource.hash)) {
@@ -127,7 +127,7 @@ export async function GetGlobalVersionResourceFileHandler (req: Request, res: Re
         }
     }
 
-    return res.response().code(404)
+    return responseHelper.response().code(404)
 }
 
 export async function GetGlobalVersionResourceFileHandler2 (req: Request, res: ResponseToolkit) {
@@ -208,30 +208,30 @@ export async function GetGlobalVersionAssetManifestHandler2 (req: Request, res: 
     return JSON.parse(manifestBlob.toString())
 }
 
-export async function GetGlobalVersionResourceFilePartHandler (req: Request, res: ResponseToolkit) {
-    const m = req.params['partIndex'].match(/^00[1-9]|0[1-9][0-9]|[1-9][0-9]{2}$/)
+export async function GetGlobalVersionResourceFilePartHandler (request: Request, responseHelper: ResponseToolkit) {
+    const m = request.params['partIndex'].match(/^00[1-9]|0[1-9][0-9]|[1-9][0-9]{2}$/)
     if (!m)
-    return res.response().code(404)
+    return responseHelper.response().code(404)
     const partIndex = +m[0]
 
-    const language = req.params['language']
+    const language = request.params['language']
     const resources = await getResources(language)
     if (!resources)
-    return res.response().code(404)
+    return responseHelper.response().code(404)
 
-    if (req.params['cacheKey'] !== await resourceCacheKey(language, resources.tree))
-    return res.response().code(404)
+    if (request.params['cacheKey'] !== await resourceCacheKey(language, resources.tree))
+    return responseHelper.response().code(404)
 
     const handle = await fs.open(resources.path + 'builtin/m', 'r')
     const stat = await handle.stat()
     await handle.close()
     if ((partIndex - 1) * 4000000 >= stat.size)
-    return res.response().code(404)
+    return responseHelper.response().code(404)
     // return handle.createReadStream({
     // 	start: (partIndex - 1) * 4000000,
     // 	end: partIndex * 4000000 - 1,
     // })
-    return res.file(resources.path + 'builtin/m', {
+    return responseHelper.file(resources.path + 'builtin/m', {
     start: (partIndex - 1) * 4000000,
     end: Math.min(partIndex * 4000000, stat.size) - 1,
     etagMethod: false,
@@ -302,16 +302,16 @@ export async function allDigimonCodes(language: api.LanguageCodeType): Promise<s
 }
 
 const deflateRaw = promisify(zlib.deflateRaw)
-export async function GetMasterDataHandler (req: Request, res: ResponseToolkit): Promise<object> {
-    const masters = await getMasters(req.params['language'], req.params['cacheKey'])
+export async function GetMasterDataHandler (request: Request, responseHelper: ResponseToolkit): Promise<object> {
+    const masters = await getMasters(request.params['language'], request.params['cacheKey'])
     if (!masters)
-        return res.response().code(404)
-    else if (req.params['hashName'] === 'E3FE0CBF2BC630C7E996F15DE1DD32A9')
+        return responseHelper.response().code(404)
+    else if (request.params['hashName'] === 'E3FE0CBF2BC630C7E996F15DE1DD32A9')
         return masters.manifest
     else {
-        const master = masters.manifest.masters.find(m => m.hashName === req.params['hashName'])
+        const master = masters.manifest.masters.find(m => m.hashName === request.params['hashName'])
         if (!master)
-            return res.response().code(404)
+            return responseHelper.response().code(404)
         else {
             const name = master.masterName
             const blob = await masters.tree.entryByName(`${name}.json`).getBlob()

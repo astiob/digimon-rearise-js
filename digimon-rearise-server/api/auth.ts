@@ -598,15 +598,15 @@ dt { padding-right: 1ex }
     }
 }
 
-export async function DoAccountRestoreHandler (req: Request, res: ResponseToolkit): Promise<api.MigrationRestorePassword.Response> {
-    const commonRequest = await getValidCommonRequest(req, false)
-    const payload = req.payload as api.WithCommonRequest<api.MigrationRestorePassword.Request>
-    return migrationRestorePassword(req.headers['user-agent'], commonRequest, payload)
+export async function DoAccountRestoreHandler (request: Request, responseHelper: ResponseToolkit): Promise<api.MigrationRestorePassword.Response> {
+    const commonRequest = await getValidCommonRequest(request, false)
+    const payload = request.payload as api.WithCommonRequest<api.MigrationRestorePassword.Request>
+    return migrationRestorePassword(request.headers['user-agent'], commonRequest, payload)
 }
 
-export async function GetBackupPasswordHandler (req: Request, res: ResponseToolkit): Promise<api.MigrationBackupPassword.Response> {
-    const commonRequest = await getValidCommonRequest(req)
-    const userId = req.auth.credentials.user!.userId
+export async function GetBackupPasswordHandler (request: Request, responseHelper: ResponseToolkit): Promise<api.MigrationBackupPassword.Response> {
+    const commonRequest = await getValidCommonRequest(request)
+    const userId = request.auth.credentials.user!.userId
     const [serverName, serverUserId] =
         !('languageCodeType' in commonRequest)
             ? [servers.jp.apiUrlBase.match(/\/\/([^/]+)\//)![1]!, userId]
@@ -651,12 +651,12 @@ async function createUser(pool: mysql.Pool, commonRequest: api.CommonRequest, pa
     }
 }
 
-export async function CreateUserHandler (req: Request, res: ResponseToolkit): Promise<api.WithCommonResponse<api.UserCreate.Response>> {
+export async function CreateUserHandler (request: Request, responseHelper: ResponseToolkit): Promise<api.WithCommonResponse<api.UserCreate.Response>> {
     try {
         // handler: async (request, h): Promise<api.UserCreate.Response> => {
-        const commonRequest = await getValidCommonRequest(req, false)
+        const commonRequest = await getValidCommonRequest(request, false)
 
-        const payload = req.payload as api.UserCreate.Request
+        const payload = request.payload as api.UserCreate.Request
         function isJapan(payload: api.UserCreate.Request): payload is api.UserCreate.JapanRequest {
             return !('languageCodeType' in commonRequest)
         }
@@ -702,7 +702,7 @@ export async function CreateUserHandler (req: Request, res: ResponseToolkit): Pr
                 },
             },
         }
-    } catch (e) { console.error(`[${now()}]`, req.path, req.payload, e); throw e }
+    } catch (e) { console.error(`[${now()}]`, request.path, request.payload, e); throw e }
 }
 
 async function masterCacheKey(language: api.LanguageCodeType): Promise<string> {
@@ -711,8 +711,8 @@ async function masterCacheKey(language: api.LanguageCodeType): Promise<string> {
     return commit.message().match(/^.* ([0-9a-f]+)\n/)![1]!
 }
 
-export async function GetAppStatusHandler (req: Request, res: ResponseToolkit): Promise<api.AppStatus.Response> {
-    const commonRequest = await getValidCommonRequest(req, false)
+export async function GetAppStatusHandler (request: Request, responseHelper: ResponseToolkit): Promise<api.AppStatus.Response> {
+    const commonRequest = await getValidCommonRequest(request, false)
     const isJapan = !('languageCodeType' in commonRequest)
     const languageCodeType = commonRequest.languageCodeType ?? api.LanguageCodeType.Ja
     const inherentLanguageSuffix = isJapan && isCustomBaseUrl() ? 'ja/' : ''
@@ -796,9 +796,9 @@ export async function getSession(sessionId: string) {
     }
 }
 
-export async function LoginHandler (req: Request, res: ResponseToolkit): Promise<api.UserLogin.Response> {
-    const commonRequest = await getValidCommonRequest(req, false)
-    const payload = req.payload as api.UserLogin.Request
+export async function LoginHandler (request: Request, responseHelper: ResponseToolkit): Promise<api.UserLogin.Response> {
+    const commonRequest = await getValidCommonRequest(request, false)
+    const payload = request.payload as api.UserLogin.Request
     let triggerPrettyDownload = false
     if (payload.userId /*>= 0x02_00_00_00*/) {
         const [[result]] = await pool.execute<mysql.RowDataPacket[]>(
