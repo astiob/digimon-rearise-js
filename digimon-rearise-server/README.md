@@ -10,17 +10,16 @@ directory of the project.
 
 1. Create a `config.json` from the `config-template.json` file. (See Note 1)
 2. Setup a MySQL Database, somewhere.
-3. Enter your MySQL Database Credentials into the `db` object in `config.json`.
-4. Setup a HTTP proxy with your reverse proxy of choice. Included below are instructions for `mitm`.
-5. Copy the entirety of the [game's resources](https://github.com/astiob/digimon-rearise-resources-raw) into the root folder and set that as the `resourceRepositoryPath` in `config.json`.  
+3. Install the schema (`setup/schema.sql`) into the database.
+4. Enter your MySQL Database Credentials into the `db` object in `config.json`.
+5. Setup a HTTP proxy with your reverse proxy of choice. Included below are instructions for `mitm`.
+6. Copy the entirety of the [game's resources](https://github.com/astiob/digimon-rearise-resources-raw) into the root folder and set that as the `resourceRepositoryPath` in `config.json`.  
    You may have to download the resources first.
-6. Build the `digimon-rearise-bot` repository first (`npm run tsc` in there), if you haven't already.
-7. Build the module with `npm run tsc`.
-8. Run the module with `node .`, `node index.js` or `npx index.ts`.
+7. Build the `digimon-rearise-bot` repository first (`npm run tsc` in there), if you haven't already.
+8. Build the module with `npm run tsc`.
+9. Run the module with `node .`, `node index.js` or `npx index.ts`.
 
 ### mitm Proxy
-
-...
 
 ## Troubleshooting
 
@@ -41,7 +40,16 @@ Ensure you have updated `npm` to the latest version, and are using a version of 
 The frontpage of [https://digi-rearise.is-saved.org/](https://digi-rearise.is-saved.org/) is stored in `/public`.  
 We've excluded the APKs because we can't really upload them into GitHub.
 
-You can find them <we haven't uploaded our changes yet since it's not really centralized or anyhting yet>.
+You can find them <we haven't uploaded our changes yet since it's not really centralized or anything yet>.
+
+## Code Structure
+
+  * `common` contains utlity/common code.
+  * `endpoints` contains the API functionality.
+  * `public` is the public files served when you attempt to access the server via HTTP; it contains our public frontpage.
+  * `setup` are any relevant information.
+  * `docs` contains documentation-related stuff.
+  * `index.ts` is the entry point.
 
 ## Common Operations
 
@@ -52,6 +60,31 @@ You can find them <we haven't uploaded our changes yet since it's not really cen
 ### Changing Game Data Schema
 
 ...
+
+### Adding a new Endpoint
+
+1. Create a new entry in `index.ts`
+   ```typescript
+   import { NewRequestHandler } from "./api/path/to/endpoint";
+   
+   server.route({
+       method: 'POST',
+       path: '/path/to/endpoint',
+       handler: NewRequestHandler
+   })
+   ```
+2. Design your new endpoint function in `/api`
+   ```typescript
+   import { Request, ResponseToolkit } from '@hapi/hapi'
+   import * as api from '../../digimon-rearise-bots/apitypes'
+   
+   export async function NewRequestHandler (request: Request, responseHelper: ResponseToolkit): Promise<T> {
+       const commonRequest = await getValidCommonRequest(request, false)
+       const payload: T = {}; // replace 'T' with the response datatype.
+       return payload;
+   }
+   ```
+   Note: `getValidCommonRequest` is part of `common/digi_utils`.
 
 ## Notes
 

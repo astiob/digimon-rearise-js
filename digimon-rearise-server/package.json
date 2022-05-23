@@ -4,7 +4,8 @@
   "description": "Digimon ReArise fan server",
   "main": "index.js",
   "scripts": {
-    "tsc": "tsc"
+    "build": "tsc",
+    "start": "node ./index.js"
   },
   "repository": {
     "type": "git",

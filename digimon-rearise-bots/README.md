@@ -16,13 +16,8 @@ directory of the project.
 2. Set up a MySQL Database, somewhere.
 3. Enter your MySQL Database Credentials into the `db` object in `config.json`.
 4. [Create a Discord bot token](https://www.writebots.com/discord-bot-token/) and enter it into `clientId` and `token` in `config.json`.
-5. Follow `mitm`, `HttpToolkit` (or whichever Proxy you use) instructions below
+5. Follow `mitm` (or whichever Proxy you use) instructions below
 6. Build the module with `npm run tsc`.
 7. Run the module with `node .`, `node index.js` or `npx index.js`.
 
 ### mitm Proxy
-
-### HTTP Toolkit Proxy
-
-1. Connect your Device using the HttpToolkit app to the HttpToolkit app on the computer.
-2. 
