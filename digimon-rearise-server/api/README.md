@@ -8,9 +8,10 @@
 * `digimon.ts` - Anything to do with modifying your Digimon (as an individual unit)
 * `gacha.ts` - Anything to do with Gacha.
 * `home.ts` - Anything to do with your Home (the first thing you see).
-* `missions.ts` - Anything to do with Missions/Quests.
+* `missions.ts` - Anything to do with Missions (the one you do daily)
 * `news.ts` - Anything to do with the News (in-game).
 * `presents.ts` - Anything to do with the Present Box.
+* `quest.ts` - Anything to do with Quests (the one with stages and Jijimon)
 * `raid.ts` - Anything to do with Raging Raid Battles (aka. XL Battles; the one that is 99% of the time "no raid available").
 * `shop.ts` - Anything to do with the shop.
 * `story.ts` - Anything to do with the story mode.
