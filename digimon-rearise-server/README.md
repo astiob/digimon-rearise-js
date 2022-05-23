@@ -16,8 +16,8 @@ directory of the project.
 6. Copy the entirety of the [game's resources](https://github.com/astiob/digimon-rearise-resources-raw) into the root folder and set that as the `resourceRepositoryPath` in `config.json`.  
    You may have to download the resources first.
 7. Build the `digimon-rearise-bot` repository first (`npm run tsc` in there), if you haven't already.
-8. Build the module with `npm run tsc`.
-9. Run the module with `node .`, `node index.js` or `npx index.ts`.
+8. Build the module with `npm run build`.
+9. Run the module with `npm run start`, `node .`, `node index.js` or `npx index.ts`.
 
 ### mitm Proxy
 
