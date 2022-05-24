@@ -9,7 +9,7 @@ import {now} from 'digi-rise/util'
 import mysql from 'mysql2/promise'
 import stream from 'stream'
 
-import {db as dbConfig, encryptionKeyKey, loginEncryptionKey, masterEncryptionKey, masterRepositoryPath, resourceEncryptionKey, resourceRepositoryPath, sessionIdKey} from './config.json'
+import {db as dbConfig, port as serverPort, encryptionKeyKey, loginEncryptionKey, masterEncryptionKey, masterRepositoryPath, resourceEncryptionKey, resourceRepositoryPath, sessionIdKey} from './config.json'
 import {GetPurchaseHistoryHandler, GetShopHandler} from "./api/shop";
 import {EditUserProfileHandler, GetUserProfileTopHandler} from "./api/user_profile";
 import {GetGachaRateDetailHandler, GetGachaTopHandler} from "./api/gacha";
@@ -38,7 +38,7 @@ import {
 	LoginHandler,
 	CreateUserHandler, GetAppStatusHandler, getSession
 } from "./api/auth";
-import {digiriseError, getValidCommonRequest} from "./common/digi_utils";
+import {digiriseError} from "./common/digi_utils";
 import {
 	GetGlobalVersionAssetManifestHandler,
 	GetMasterDataHandler,
@@ -79,7 +79,7 @@ export const pool = mysql.createPool({
 
 async function init() {
 	const server = Hapi.server({
-		port: 3000,
+		port: serverPort,
 		host: 'localhost',
 		routes: {
 			files: {
@@ -156,10 +156,8 @@ async function init() {
 			}
 			return res.continue
 		} else if (response.variety === 'stream' || !req.auth?.artifacts?.encryptionKey || response.source === null) {
-			// console.log(response.source)
 			return res.continue
 		} else {
-			// console.log(response.source)
 			const bytes = response.variety === 'buffer' ? response.source as Buffer : typeof response.source === 'object' ? Buffer.from(JSON.stringify(response.source)) : Buffer.from(String(response.source))
 			const paddedCipherIv = crypto.randomBytes(20)
 			const cipher = crypto.createCipheriv('aes-256-cbc', req.auth.artifacts.encryptionKey, paddedCipherIv.slice(2, 18))
@@ -337,7 +335,6 @@ async function init() {
 		handler: GetHomeTimersHandler
 	})
 
-	// todo: Figure out where this goes.
 	server.route({
 		method: 'POST',
 		path: '/api/information/getList',
@@ -492,36 +489,6 @@ async function init() {
 	await server.start()
 
 	console.log(`[${now()}] Server running on ${server.info.uri}`)
-
-	// console.log(`[${now()}] DO NOT TERMINATE this server before shutting down the reverse proxy and ensuring incoming requests have ceased!`)
-	// const rollingUpgrade: boolean = true
-	// const [rows] = await pool.query<mysql.RowDataPacket[]>(
-	// 	// `last_attempt` = max(select `last_attempt` from `legacy_accounts` where `server` = `top`.`server` and `user_id` = `top`.`user_id`)
-	// 	'select `server`, `user_id`, `uuid`, `language_code_type`, `os_type`, `friend_code`, `password` from `legacy_accounts` where `consentFormItemData` is not null and `new_password` is null' +
-	// 	(rollingUpgrade ? ' and `failed`' : ''),
-	// )
-	// for (const row of rows) {
-	// 	const server = Object.values(servers).find(s => s.apiUrlBase.includes(row['server']))!
-	// 	const user = {
-	// 		osType: row['os_type'],
-	// 		adId: uuidv4(),
-	// 		userId: row['user_id'],
-	// 		uuid: row['uuid'],
-	// 		validationCode: '8cf07ff89c25d55d9c16f5c1c036a29e',
-	// 		languageCodeType: row['language_code_type'],
-	// 		delay: 2000,
-	// 	}
-	// 	console.log(`[${now()}] Resuming loading data for ${row['friend_code']} with password ${row['password']} and uuid ${row['uuid']}...`)
-	// 	;(async () => {
-	// 		try {
-	// 			await loadUserData(server, user, row['friend_code'], row['password'], highPriorityDataKinds)
-	// 			await loadUserData(server, user, row['friend_code'], row['password'], lowPriorityDataKinds, true)
-	// 			console.log(`[${now()}] Completely loaded data for ${row['friend_code']} with password ${row['password']} and uuid ${row['uuid']}.`)
-	// 		} catch (e) {
-	// 			console.error(`[${now()}] Failed loading data for ${row['friend_code']} with password ${row['password']} and uuid ${row['uuid']}:`, e)
-	// 		}
-	// 	})()
-	// }
 }
 
 process.on('unhandledRejection', (err) => {
