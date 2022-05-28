@@ -2,6 +2,9 @@ allow_hosts:
   - api.digi-rise.com
   - digirige-os-api.channel.or.jp
   - digi-rearise.is-saved.org
+map_remote:
+  - /(api[.]digi-rise[.]com|digirige-os-api[.]channel[.]or[.]jp)/localhost:3000
+  - /digi-rearise.is-saved.org/localhost:3000
 ssl_insecure: true
 http2: false
 scripts: [ "C:\\Users\\aytimothy\\.mitmproxy\\local-redirect.py" ]
