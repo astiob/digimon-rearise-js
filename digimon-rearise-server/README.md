@@ -21,6 +21,22 @@ directory of the project.
 
 ### mitm Proxy
 
+1. Install `mitmproxy` from [https://mitmproxy.org/](https://mitmproxy.org/).
+2. Run `mitmproxy` for the first time. Close it.
+3. Navigate to your user home (`~` on Linux, and `%userprofile%` on Windows) and into the `.mitmproxy` folder.
+4. Drag `config.yaml` and `local-redirect.py` into your `.mitm` folder.
+5. Follow the Android/iOS Proxy setup instructions as per in the public page (`/public/index.html` or on [the website](https://digi-rearise.is-saved.org)).
+6. Follow the certificate instructions on `mitm.it` ([see also](http://wiki.cacert.org/FAQ/ImportRootCert#Android_Phones_.26_Tablets); only works when you're connected to the proxy; do Step 5 first!).
+
+This script may be useful:
+```bash
+cd .mitmproxy
+openssl crl2pkcs7 -nocrl -certfile mitmproxy-ca.pem | openssl pkcs7 -print_certs -out mitmproxy-ca.crt
+openssl x509 -inform PEM -subject_hash_old -in mitmproxy-ca.crt | head -1            # This is your cert hash; ie. c8750f0d
+cat mitmproxy-ca.crt > <hash>.0                                                      # Your hash goes here; ie. cat mitmproxy-ca.crt > c8750f0d.0
+adb push <hash>.0 /system/etc/security/cacerts                                       # Root required; push root certificate to master store.
+```
+
 ## Troubleshooting
 
 ### Dependencies Fail

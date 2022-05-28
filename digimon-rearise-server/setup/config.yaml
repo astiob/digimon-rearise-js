@@ -1,0 +1,7 @@
+allow_hosts:
+  - api.digi-rise.com
+  - digirige-os-api.channel.or.jp
+  - digi-rearise.is-saved.org
+ssl_insecure: true
+http2: false
+scripts: [ "C:\\Users\\aytimothy\\.mitmproxy\\local-redirect.py" ]
