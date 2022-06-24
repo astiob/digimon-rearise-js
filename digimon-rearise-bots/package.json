@@ -15,7 +15,7 @@
     "@types/tunnel": "0.0.3",
     "@types/uuid": "^8.3.1",
     "declarative-js": "^3.8.15",
-    "got": "^11.8.2",
+    "got": "^11.8.5",
     "javascript-lp-solver": "^0.4.24",
     "nodegit": "^0.28.0-alpha.13",
     "p-lazy": "^3.1.0",
