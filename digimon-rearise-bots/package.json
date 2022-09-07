@@ -36,5 +36,10 @@
     "discord.js": "^13.6.0",
     "mysql2": "^2.3.3",
     "ts-node": "^10.2.1"
+  },
+  "overrides": {
+    "nodegit": {
+      "got": "$got"
+    }
   }
 }
