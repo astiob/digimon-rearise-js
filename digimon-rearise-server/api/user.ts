@@ -18,6 +18,7 @@ function isUserCreateSession(sessionId: string) {
 
 async function getUserData(pool: mysql.Pool, userId: number, language: api.LanguageCodeType, triggerPrettyDownload: boolean, tamerName?: string): Promise<api.UserData> {
     let userReadScenarioIdList = [
+        10001,
         10101, 10102, 10103, 10104, 10105, 10106,
         10201, 10202, 10203, 10204, 10205, 10206, 10221, 10222, 10223, 10224, 10225, 10226, 10227,
         10301, 10302, 10303, 10304, 10305, 10306, 10307, 10321, 10322, 10323, 10324, 10325,
