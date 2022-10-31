@@ -13,7 +13,7 @@ import {shuffleInPlace} from "../common/utils";
 import {baseUrl, isCustomBaseUrl, officialBaseUrl} from "../common/config";
 import NodeGit from "nodegit";
 import {db as dbConfig, encryptionKeyKey, loginEncryptionKey, masterEncryptionKey, masterRepositoryPath, resourceEncryptionKey, resourceRepositoryPath, sessionIdKey} from '../config.json'
-import {getMasters, masterBranchNamesByCodeType, masterRepository, resourceCacheKey} from "./assets";
+import {getMasters, masterBranchNamesByCodeType, masterCacheKey, masterRepository, resourceCacheKey} from "./assets";
 import {pool} from "../index";
 
 // User Migration
@@ -703,12 +703,6 @@ export async function CreateUserHandler (request: Request, responseHelper: Respo
             },
         }
     } catch (e) { console.error(`[${now()}]`, request.path, request.payload, e); throw e }
-}
-
-async function masterCacheKey(language: api.LanguageCodeType): Promise<string> {
-    const repo = await masterRepository
-    const commit = await repo.getBranchCommit(masterBranchNamesByCodeType[language])
-    return commit.message().match(/^.* ([0-9a-f]+)\n/)![1]!
 }
 
 export async function GetAppStatusHandler (request: Request, responseHelper: ResponseToolkit): Promise<api.AppStatus.Response> {

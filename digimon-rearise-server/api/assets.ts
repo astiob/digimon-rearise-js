@@ -250,7 +250,7 @@ export const masterBranchNamesByCodeType = {
     [api.LanguageCodeType.Ko]: 'ko',
     [api.LanguageCodeType.Zh]: 'zh',
 }
-export const masterBranchNamesByDirectory: { [key: string]: string } = {
+export const masterBranchNamesByDirectory: { [key: string]: string } & { [K in SimpleLanguageTag]: string } = {
     ja: 'master',
     en: 'en',
     ko: 'ko',
@@ -278,12 +278,17 @@ export async function getMasters(language: api.LanguageCodeType | string, cacheK
     }
 }
 
-export async function masterVersion(language: api.LanguageCodeType): Promise<string> {
+export async function masterVersion(language: api.LanguageCodeType | SimpleLanguageTag): Promise<string> {
+    const branchName = typeof language === 'string' ? masterBranchNamesByDirectory[language] : masterBranchNamesByCodeType[language]
     const repo = await masterRepository
-    const commit = await repo.getBranchCommit(masterBranchNamesByCodeType[language])
+    const commit = await repo.getBranchCommit(branchName)
     const when = commit.author().when()
     const localDateAsFakeUtc = new Date(when.time() * 1000 + when.offset() * 60000)
     return localDateAsFakeUtc.toISOString().replace(/\..*/, '').replace(/T/, ' ')
+}
+
+export async function masterCacheKey(language: api.LanguageCodeType | SimpleLanguageTag): Promise<string> {
+    return versionToCacheKey(await masterVersion(language))
 }
 
 
