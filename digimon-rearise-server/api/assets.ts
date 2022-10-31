@@ -257,6 +257,8 @@ export const masterBranchNamesByDirectory: { [key: string]: string } & { [K in S
     zh: 'zh',
 }
 
+async function masterTree(language: api.LanguageCodeType | SimpleLanguageTag, cacheKey?: undefined): Promise<Tree>
+async function masterTree(language: api.LanguageCodeType | string, cacheKey?: string): Promise<Tree | undefined>
 async function masterTree(language: api.LanguageCodeType | string, cacheKey?: string): Promise<Tree | undefined> {
     const branchName = typeof language === 'string' ? masterBranchNamesByDirectory[language] : masterBranchNamesByCodeType[language]
     if (!branchName)
@@ -267,6 +269,9 @@ async function masterTree(language: api.LanguageCodeType | string, cacheKey?: st
         return
     return commit.getTree()
 }
+
+export async function getMasters(language: api.LanguageCodeType | SimpleLanguageTag, cacheKey?: undefined): Promise<Masters>
+export async function getMasters(language: api.LanguageCodeType | string, cacheKey?: string): Promise<Masters | undefined>
 export async function getMasters(language: api.LanguageCodeType | string, cacheKey?: string): Promise<Masters | undefined> {
     const tree = await masterTree(language, cacheKey)
     if (!tree)
@@ -279,12 +284,8 @@ export async function getMasters(language: api.LanguageCodeType | string, cacheK
 }
 
 export async function masterVersion(language: api.LanguageCodeType | SimpleLanguageTag): Promise<string> {
-    const branchName = typeof language === 'string' ? masterBranchNamesByDirectory[language] : masterBranchNamesByCodeType[language]
-    const repo = await masterRepository
-    const commit = await repo.getBranchCommit(branchName)
-    const when = commit.author().when()
-    const localDateAsFakeUtc = new Date(when.time() * 1000 + when.offset() * 60000)
-    return localDateAsFakeUtc.toISOString().replace(/\..*/, '').replace(/T/, ' ')
+    const masters = await getMasters(language)
+    return masters.manifest.version
 }
 
 export async function masterCacheKey(language: api.LanguageCodeType | SimpleLanguageTag): Promise<string> {
