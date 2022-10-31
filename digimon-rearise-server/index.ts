@@ -46,7 +46,7 @@ import {
 	GetGlobalVersionResourceFileHandler2,
 	GetJapanVersionAssetManifestHandler,
 	GetGlobalVersionResourceFilePartHandler,
-	GetGlobalVersionAssetManifestHandler2, masterRepository
+	GetGlobalVersionAssetManifestHandler2
 } from "./api/assets";
 import {WidgetHandler} from "./api/widget";
 import {PrintAllDigimonsHandler} from "./api/digimon";
@@ -90,13 +90,6 @@ async function init() {
 			},
 		},
 	})
-
-	const _masterRepository = await masterRepository
-	const _masterRepositoryCurrentBranch = await _masterRepository.getCurrentBranch()
-	if (_masterRepositoryCurrentBranch.name() != 'master') {
-		console.log('Master repository not checked out to master branch! Switching branches...')
-		await _masterRepository.checkoutBranch('master')
-	}
 
 	await server.register(inert)
 
