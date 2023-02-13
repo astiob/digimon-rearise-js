@@ -25,13 +25,18 @@ nav { border-bottom: 1px solid currentColor }
 <h3>Will this app ever work on iOS?</h3>
 <p>I don’t think it is possible to install custom apps on iOS. But if you know how, do <a href=#contact>tell me</a>. Unfortunately I also don’t have the official .ipa file, and I’m not sure whether it’s possible to obtain it any more.</p>
 <h2 id=import>Can I transfer my official account?</h2>
-<p><strong>In most cases, no.</strong></p>
-<p><strong>But if you have a rooted or jailbroken device, there’s a chance</strong> if you still have the app installed and haven’t cleared cache.</p>
+<p><strong>Maybe,</strong> if you still have the app installed and haven’t cleared cache.</p>
 <p><strong>On Android,</strong> you need “root”. On many Android emulators, root is already enabled or you can enable it in the settings. On BlueStacks, try <a href=https://appuals.com/root-bluestacks/>one of these options</a>. On a real phone or tablet, find and follow a recent (!) guide to root your phone. This may officially void your warranty, and some apps may restrict their functionality until you disable/remove root again. While rooted, extract the file that is in this directory (to find it, you may need to enable Root Access in your File Manager as well):<ul>
 <li><code>/data/data/com.bandainamcoent.digimon_rearise/files/cache/X3UvZc5yBeuTYqpwOZ2CRNYVxyYb8Qag/</code> for Japan</li>
 <li><code>/data/data/com.bandainamcoent.digimon_rearise_ww/files/cache/X3UvZc5yBeuTYqpwOZ2CRNYVxyYb8Qag/</code> for global app</li>
 </ul><a href=#contact>Send me</a> this file. If the directory is empty and contains no files, your account data is unfortunately already gone.</p>
-<p><strong>On iOS,</strong> this might be possible with a “jailbreak”. You will need to find the app’s private cache <em>(not</em> just the preferences that can be backed up via iMazing). If you do, <a href=#contact>contact Chortos-2</a> and we will try to find the right file together.</p>
+<p><strong>On iOS,</strong> you need either “jailbreak” or <a href=https://github.com/opa334/TrollStore#installing-trollstore>TrollStore</a>. Use a file manager such as <i>Filza for TrollStore</i> to:<ol>
+<li>select access to underlying file system,</li>
+<li>open <code>/var/mobile/Containers/Data/Application</code>,</li>
+<li>find the Digimon ReArise directory,</li>
+<li>inside it open <code>Documents/cache/X3UvZc5yBeuTYqpwOZ2CRNYVxyYb8Qag</code>,</li>
+<li>and extract the file that is within.</li>
+</ol><a href=#contact>Send me</a> this file. If the last directory is empty and contains no files, your account data is unfortunately already gone. (The necessary file is <em>not</em> just the preferences that can be backed up via iMazing.)</p>
 <!--
 <h2>Can I save my account without the app?</h2>
 <form action=api/migrate method=post>
