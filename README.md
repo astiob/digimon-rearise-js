@@ -2,7 +2,8 @@
 
 This is a collection of programs that we use to run Digimon-ReArise related programs. It is comprised of two main projects:
 
-  * `digimon-rearise-bots` which is a bot that runs the Mon bot on Discord.
+  * `digimon-rearise-bots` contains an API-level client bot that was used to automate monotonous tasks in the game and powered the [real-time graph](https://chortos.selfip.net/digimonrearise/mpr/1120) and “Huckmon” Discord bot during Japan’s vs. Guardians event and, later, account transfer from the official servers, as well as some utilities originally meant for an automated website about the game.
+
   * `digimon-rearise-server` is a reverse-engineered server that runs the game's code.
   
 Currently tested on: Node.js 16.14 (LTS ‘Gallium’)
