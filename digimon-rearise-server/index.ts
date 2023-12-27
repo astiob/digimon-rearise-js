@@ -183,12 +183,14 @@ async function init() {
 		}
 	})
 
+	/*
 	server.route({
 		method: 'GET',
 		path: '/master/{language}/{cacheKey}/{hashName}',
 		options: {auth: 'master', cache: false},
 		handler: GetMasterDataHandler
 	})
+	*/
 
 	server.route({
 		method: 'GET',
