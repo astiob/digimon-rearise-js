@@ -41,6 +41,7 @@ import {db as dbConfig} from './config.json'
 			-- left join legacy_accounts pt on pt.server = last.server and pt.user_id = last.user_id and pt.profile_top is not null and pt.last_attempt = (select max(last_attempt) from legacy_accounts pt where pt.server = last.server and pt.user_id = last.user_id and pt.profile_top is not null)
 		where last.consentFormItemData is not null
 		and last.last_attempt = (select max(last_attempt) from legacy_accounts where server = last.server and user_id = last.user_id and consentFormItemData is not null)
+		and last.friend_code = '123456789'
 	`
 	for (const user of users) {
 		const officialUserId: number = user['user_id']
@@ -65,6 +66,7 @@ import {db as dbConfig} from './config.json'
 		// 		greetings,
 		// 		first_tutorial_state,
 		// 		last_user_login,
+		// 		partner_digimon_id,
 		// 		home_digimon_0,
 		// 		home_digimon_1,
 		// 		home_digimon_2,
@@ -83,6 +85,7 @@ import {db as dbConfig} from './config.json'
 		// 		${user['profile_top'] == null ? '' : (JSON.parse(user['profile_top']) as api.ProfileTop.Response).greetings},
 		// 		${firstTutorialState},
 		// 		from_unixtime(${user['last_attempt_unix']}),
+		// 		${partnerDigimonId},
 		// 		${homeDigimonList[0]},
 		// 		${homeDigimonList[1]},
 		// 		${homeDigimonList[2]},
@@ -92,9 +95,9 @@ import {db as dbConfig} from './config.json'
 		// 		${homeDigimonList[6]}
 		// 	)
 		// `
-		await sql`
-			update \`user\` set partner_digimon_id = ${partnerDigimonId} where user_id = ${ourUserId}
-		`
+		// await sql`
+		// 	update \`user\` set partner_digimon_id = ${partnerDigimonId} where user_id = ${ourUserId}
+		// `
 	}
 
 	conn.end()
