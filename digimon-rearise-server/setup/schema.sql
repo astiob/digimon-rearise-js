@@ -63,6 +63,39 @@ CREATE TABLE `user` (
   PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE `user_digimon` (
+  `user_id` int(11) NOT NULL,
+  `user_digimon_id` int(11) NOT NULL,
+  `digimon_id` int(11) NOT NULL,
+  `is_locked` tinyint(1) NOT NULL,
+  `is_ec_locked` tinyint(1) NOT NULL,
+  `bit` int(11) NOT NULL,
+  `friendship_point` int(11) NOT NULL,
+  `mood_value` tinyint(4) NOT NULL,
+  `skill_level` tinyint(4) NOT NULL,
+  `execution_limitbreak_id` tinyint(4) NOT NULL,
+  `complete_training_ids` tinytext NOT NULL,
+  `add_friendship_point_by_period` mediumint(8) UNSIGNED NOT NULL DEFAULT 0,
+  `last_care_time` timestamp NOT NULL DEFAULT current_timestamp(),
+  `last_broken_slb_necessary_level` tinyint(4) UNSIGNED NOT NULL DEFAULT 0,
+  `awaking_level` tinyint(4) NOT NULL,
+  PRIMARY KEY (`user_id`, `user_digimon_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+CREATE TABLE `user_digimon_wearing_plugin` (
+  `user_id` int(11) NOT NULL,
+  `user_digimon_id` int(11) NOT NULL,
+  `slot_id` tinyint(4) NOT NULL,
+  `user_plugin_id` int(11) NOT NULL,
+  PRIMARY KEY (`user_id`, `user_digimon_id`, `slot_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+CREATE TABLE `user_item` (
+  `user_id` int(11) NOT NULL,
+  `item_id` int(11) NOT NULL,
+  `count` int(11) NOT NULL,
+  PRIMARY KEY (`user_id`, `item_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 ALTER TABLE `legacy_accounts`
   ADD KEY `server_user_id` (`server`,`user_id`,`last_attempt`) USING BTREE,
@@ -71,3 +104,12 @@ ALTER TABLE `legacy_accounts`
 
 ALTER TABLE `user`
   ADD UNIQUE KEY `user_uuid` (`user_id`,`uuid`);
+
+ALTER TABLE `user_digimon`
+  ADD CONSTRAINT `user_digimon_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE;
+
+ALTER TABLE `user_digimon_wearing_plugin`
+  ADD CONSTRAINT `user_digimon_wearing_plugin_user_digimon_id_fk` FOREIGN KEY (`user_id`, `user_digimon_id`) REFERENCES `user_digimon` (`user_id`, `user_digimon_id`) ON DELETE CASCADE;
+
+ALTER TABLE `user_item`
+  ADD CONSTRAINT `user_item_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE;

@@ -22,83 +22,120 @@ import {db as dbConfig} from './config.json'
 			return conn.execute<T>(strings.join('?'), values)
 	}
 
-	const [users] = await sql<mysql.RowDataPacket[]>`
-		select
-			last.server,
-			last.user_id,
-			last.uuid,
-			last.language_code_type,
-			last.voice_language_type,
-			last.os_type,
-			last.consentFormItemData,
-			last.tamer_name,
-			unix_timestamp(last.last_attempt) last_attempt_unix,
-			-- pt.profile_top,
-			uga.user_getAll
+	await sql`set time_zone = '+09:00'`
+
+	await sql`
+		insert into user_digimon (
+			user_digimon_id,
+			user_id,
+			digimon_id,
+			is_locked,
+			is_ec_locked,
+			bit,
+			friendship_point,
+			mood_value,
+			skill_level,
+			execution_limitbreak_id,
+			complete_training_ids,
+			add_friendship_point_by_period,
+			last_care_time,
+			last_broken_slb_necessary_level,
+			awaking_level
+		) select
+			udl.user_digimon_id,
+			uga.user_id | (case uga.server when 'api.digi-rise.com' then 0 else 16777216 end),
+			udl.digimon_id,
+			udl.is_locked,
+			udl.is_ec_locked,
+			udl.bit,
+			udl.friendship_point,
+			udl.mood_value,
+			udl.skill_level,
+			udl.execution_limitbreak_id,
+			udl.complete_training_ids,
+			udl.add_friendship_point_by_period,
+			udl.last_care_time,
+			udl.last_broken_slb_necessary_level,
+			udl.awaking_level
 		from
-			legacy_accounts last
-			join legacy_accounts uga on uga.server = last.server and uga.user_id = last.user_id and uga.user_getAll is not null and uga.last_attempt = (select max(last_attempt) from legacy_accounts uga where uga.server = last.server and uga.user_id = last.user_id and uga.user_getAll is not null)
-			-- left join legacy_accounts pt on pt.server = last.server and pt.user_id = last.user_id and pt.profile_top is not null and pt.last_attempt = (select max(last_attempt) from legacy_accounts pt where pt.server = last.server and pt.user_id = last.user_id and pt.profile_top is not null)
-		where last.consentFormItemData is not null
-		and last.last_attempt = (select max(last_attempt) from legacy_accounts where server = last.server and user_id = last.user_id and consentFormItemData is not null)
-		and last.friend_code = '123456789'
+			legacy_accounts uga,
+			json_table(uga.user_getAll, '$.userData.userDigimonList[*]' columns (
+				user_digimon_id int path '$.userDigimonId',
+				digimon_id int path '$.digimonId',
+				is_locked int path '$.isLocked',
+				is_ec_locked int path '$.isEcLocked',
+				bit int path '$.bit',
+				friendship_point int path '$.friendshipPoint',
+				mood_value int path '$.moodValue',
+				skill_level int path '$.skillLevel',
+				execution_limitbreak_id int path '$.executionLimitbreakId',
+				complete_training_ids json path '$.completeTrainingIds',
+				add_friendship_point_by_period int path '$.addFriendshipPointByPeriod',
+				last_care_time timestamp path '$.lastCareTime',
+				last_broken_slb_necessary_level int path '$.lastBrokenSlbNecessaryLevel',
+				awaking_level int path '$.awakingLevel'
+			)) udl
+		where uga.user_getAll is not null and uga.last_attempt = (
+			select max(last_attempt)
+			from legacy_accounts
+			where server = uga.server
+			and user_id = uga.user_id
+			and user_getAll is not null
+		)
 	`
-	for (const user of users) {
-		const officialUserId: number = user['user_id']
-		const isJapan = user['server'] === 'api.digi-rise.com'
-		const ourUserId = isJapan ? officialUserId : officialUserId | 0x01_00_00_00
-		const userData = (JSON.parse(user['user_getAll']) as api.UserGetAll.Response).userData
-		const homeDigimonList = userData.homeDigimonList
-		const firstTutorialState =
-		// 	userData.userEndTutorialTypeList.includes(api.TutorialType.FirstTutorial) ? api.FirstTutorialState.End
-		// 	: 'userTutorial' in userData ? userData.userTutorial.tutorialType === 
-			api.FirstTutorialState.End  // it's impossible to create a transfer password before first tutorial end
-		const partnerDigimonId = userData.personal.partnerDigimonId
-		// await sql`
-		// 	insert into \`user\` (
-		// 		user_id,
-		// 		uuid,
-		// 		language_code_type,
-		// 		voice_type,
-		// 		os_type,
-		// 		consent_form_item_data,
-		// 		tamer_name,
-		// 		greetings,
-		// 		first_tutorial_state,
-		// 		last_user_login,
-		// 		partner_digimon_id,
-		// 		home_digimon_0,
-		// 		home_digimon_1,
-		// 		home_digimon_2,
-		// 		home_digimon_3,
-		// 		home_digimon_4,
-		// 		home_digimon_5,
-		// 		home_digimon_6
-		// 	) values (
-		// 		${ourUserId},
-		// 		${user['uuid']},
-		// 		${user['language_code_type']},
-		// 		${user['voice_language_type'] ?? (isJapan ? api.VoiceLanguageType.Jpn : null)},
-		// 		${user['os_type']},
-		// 		${user['consentFormItemData'] === 'null' ? null : user['consentFormItemData']},
-		// 		${user['tamer_name']},
-		// 		${user['profile_top'] == null ? '' : (JSON.parse(user['profile_top']) as api.ProfileTop.Response).greetings},
-		// 		${firstTutorialState},
-		// 		from_unixtime(${user['last_attempt_unix']}),
-		// 		${partnerDigimonId},
-		// 		${homeDigimonList[0]},
-		// 		${homeDigimonList[1]},
-		// 		${homeDigimonList[2]},
-		// 		${homeDigimonList[3]},
-		// 		${homeDigimonList[4]},
-		// 		${homeDigimonList[5]},
-		// 		${homeDigimonList[6]}
-		// 	)
-		// `
-		// await sql`
-		// 	update \`user\` set partner_digimon_id = ${partnerDigimonId} where user_id = ${ourUserId}
-		// `
-	}
+
+	await sql`
+		insert into user_digimon_wearing_plugin (
+			user_id,
+			user_digimon_id,
+			slot_id,
+			user_plugin_id
+		) select
+			uga.user_id | (case uga.server when 'api.digi-rise.com' then 0 else 16777216 end),
+			udwp.user_digimon_id,
+			udwp.slot_id,
+			udwp.user_plugin_id
+		from
+			legacy_accounts uga,
+			json_table(uga.user_getAll, '$.userData.userDigimonList[*]' columns (
+				user_digimon_id int path '$.userDigimonId',
+				nested path '$.wearingPluginList[*]' columns (
+					slot_id int path '$.slotId',
+					user_plugin_id int path '$.userPluginId'
+				)
+			)) udwp
+		where uga.user_getAll is not null and uga.last_attempt = (
+			select max(last_attempt)
+			from legacy_accounts
+			where server = uga.server
+			and user_id = uga.user_id
+			and user_getAll is not null
+		) and udwp.user_plugin_id >= 0
+	`
+
+	await sql`
+		insert into user_item (
+			user_id,
+			item_id,
+			count
+		) select
+			uga.user_id | (case uga.server when 'api.digi-rise.com' then 0 else 16777216 end),
+			ui.item_id,
+			ui.count
+		from
+			legacy_accounts uga,
+			json_table(uga.user_getAll, '$.userData.userItemList[*]' columns (
+				item_id int path '$.itemId',
+				count int path '$.count'
+			)) ui
+		where uga.user_getAll is not null and uga.last_attempt = (
+			select max(last_attempt)
+			from legacy_accounts
+			where server = uga.server
+			and user_id = uga.user_id
+			and user_getAll is not null
+		) and ui.count > 0
+	`
 
 	conn.end()
 })()
