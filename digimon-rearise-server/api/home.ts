@@ -205,6 +205,12 @@ export async function GetActivityBoardDataHandler (request: Request, responseHel
     }
 }
 
+export async function TalkToVisitorHandler (request: Request, responseHelper: ResponseToolkit): Promise<api.HomeTalkToVisitor.Response> {
+    return {
+        result: true,
+    }
+}
+
 export async function SetHomeTrainingDigimonHandler (request: Request, responseHelper: ResponseToolkit): Promise<api.HomeDigimonEdit.Response> {
     const commonRequest = await getValidCommonRequest(request)
 

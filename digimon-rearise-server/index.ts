@@ -26,6 +26,7 @@ import {
 import {
 	ClaimDailyLoginBonusRequestHandler,
 	GetActivityBoardDataHandler, GetHomeStatusHandler, GetHomeTimersHandler,
+	TalkToVisitorHandler,
 	SetHomeTrainingDigimonHandler
 } from "./api/home";
 import {GetPresentsDataHandler} from "./api/presents";
@@ -371,6 +372,12 @@ async function init() {
 		method: 'POST',
 		path: '/api/home/board',
 		handler: GetActivityBoardDataHandler
+	})
+
+	server.route({
+		method: 'POST',
+		path: '/api/home/talkToVisitor',
+		handler: TalkToVisitorHandler
 	})
 
 	server.route({

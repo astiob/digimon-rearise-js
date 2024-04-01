@@ -1028,6 +1028,14 @@ export namespace HomeDigimonEdit {
 		result: boolean
 	}
 }
+export namespace HomeTalkToVisitor {
+	export interface Request {
+		visitedDigimonOwnerId: int
+	}
+	export interface Response {
+		result: boolean
+	}
+}
 export namespace InformationGetList {
 	export interface Request {}
 	export interface Response {
