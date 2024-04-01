@@ -144,7 +144,41 @@ const homeStatusIntervals = {
 
 export async function GetHomeTimersHandler (request: Request, responseHelper: ResponseToolkit): Promise<api.HomeStatusIntervals.Response> {
     const commonRequest = await getValidCommonRequest(request)
-    return homeStatusIntervals
+    return {
+        ...homeStatusIntervals,
+        visitorList: [{
+            userId: 0,
+            tamerName: {
+                [api.LanguageCodeType.Ja]: "エイプリルフール",
+                [api.LanguageCodeType.En]: "April Fools",
+                [api.LanguageCodeType.Ko]: "만우절",
+                [api.LanguageCodeType.Zh]: "愚人節",
+            }[commonRequest.languageCodeType ?? api.LanguageCodeType.Ja],
+            tamerLevel: 1,
+            relationshipType: api.FriendState.Guest,
+            isClanMember: false,
+            visitorDigimon: {
+                baseInfo: {
+                    userDigimonId: 0,
+                    digimonId: 1998105,
+                    level: 99,
+                    maxLevel: 99,
+                    friendshipLevel: 99,
+                    maxFriendshipLevel: 99,
+                    moodValue: 0,
+                    skillLevel: 1,
+                    executionLimitbreakId: 0,
+                    completeTrainingIds: [],
+                    lastBrokenSlbNecessaryLevel: 0,
+                    wearingPluginList: [],
+                    lastCareTime: "2000-01-01T00:00:00+09:00",
+                    awakingLevel: 0,
+                },
+                friendshipPoint: 0,
+            },
+            isTalked: false,
+        }],
+    }
 }
 
 export async function ClaimDailyLoginBonusRequestHandler (request: Request, responseHelper: ResponseToolkit): Promise<api.HomeLogin.Response> {
