@@ -34,7 +34,7 @@
     "devalue": "^2.0.1",
     "discord-api-types": "^0.27.2",
     "discord.js": "^13.6.0",
-    "mysql2": "^2.3.3",
+    "mysql2": "^3.9.4",
     "ts-node": "^10.2.1"
   },
   "overrides": {
