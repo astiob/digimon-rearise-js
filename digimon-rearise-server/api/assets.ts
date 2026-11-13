@@ -102,7 +102,7 @@ export async function GetJapanVersionAssetManifestHandler (request: Request, res
 
 export async function GetGlobalVersionResourceFileHandler (request: Request, responseHelper: ResponseToolkit) {
     const path = request.params['path']
-    if (path.indexOf('.') >= 0/* || path.substring(0, 1) === '/'*/)
+    if (!path || path.indexOf('.') >= 0/* || path.substring(0, 1) === '/'*/)
         return responseHelper.response().code(404)
 
     const osType = request.params['osType']
@@ -133,13 +133,13 @@ export async function GetGlobalVersionResourceFileHandler (request: Request, res
 export async function GetGlobalVersionResourceFileHandler2 (req: Request, res: ResponseToolkit) {
     let path = req.params['path']
     let partIndex = undefined
-    const m = path.match(/(^.*)\.(00[1-9]|0[1-9][0-9]|[1-9][0-9]{2})$/)
+    const m = path?.match(/(^.*)\.(00[1-9]|0[1-9][0-9]|[1-9][0-9]{2})$/)
     if (m) {
         path = m[1]
         partIndex = +m[2]
     }
 
-    if (path.indexOf('.') >= 0/* || path.substring(0, 1) === '/'*/)
+    if (!path || path.indexOf('.') >= 0/* || path.substring(0, 1) === '/'*/)
         return res.response().code(404)
 
     let resourceKind = req.params['resourceKind']
